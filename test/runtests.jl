@@ -51,10 +51,11 @@ end
     @test all(FyL .≈ exact_flux_y)
 
     # test entropy conservation property
+    # entropy potentials
+    ψx(U) = (γ-1)*U[2]*Fluxes2D.entropy_scale
+    ψy(U) = (γ-1)*U[3]*Fluxes2D.entropy_scale
     vTFx = sum(((x,y,z)->((x-y)*z)).(VL,VR,Fx))
     vTFy = sum(((x,y,z)->((x-y)*z)).(VL,VR,Fy))
-    ψx(U) = (γ-1)*U[2]*Fluxes2D.entropy_scale # entropy potentials
-    ψy(U) = (γ-1)*U[3]*Fluxes2D.entropy_scale
     @test vTFx ≈ ψx(UL)-ψx(UR)
     @test vTFy ≈ ψy(UL)-ψy(UR)
 end
