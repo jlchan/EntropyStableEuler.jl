@@ -13,7 +13,6 @@ end
 #####
 ##### functions of conservative variables
 #####
-
 "function pfun(rho, rhou, rhov, E)
     pressure as a function of conservative variables"
 function pfun_nd(rho, rhoU, E)
@@ -64,7 +63,6 @@ end
 #####
 ##### functions of entropy variables
 #####
-
 "function s_vfun(v1,vU,vE)
     entropy as function of entropy variables"
 function s_vfun_nd(v1,vU,vE)
@@ -94,12 +92,3 @@ end
 function conservative_to_primitive_beta_nd(rho,rhoU,E)
     return rho, (x->x./rho).(rhoU), betafun_nd(rho,rhoU,E)
 end
-
-#####
-##### dispatch to unified code
-#####
-
-# changes definition of entropy variables by a constant scaling
-const entropy_scale = 1/(γ-1)
-scale_entropy_vars_output(V...) = (x->@. x*entropy_scale).(V)
-scale_entropy_vars_input(V...) = (x->@. x/entropy_scale).(V)
