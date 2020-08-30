@@ -85,6 +85,13 @@ end
     @test all(Fx .≈ Fx2)
     @test all(Fy .≈ Fy2)
 
+    # test type stability
+    @inferred Fluxes2D.primitive_to_conservative(1.1,.2,.3,2.1)
+    @inferred Fluxes2D.v_ufun(UR...)
+    @inferred Fluxes2D.conservative_to_primitive_beta(UL...)
+    @inferred Fluxes2D.conservative_to_primitive_beta(UR...)
+    @inferred Fluxes2D.euler_fluxes_2D(QL...,QR...)
+
     # test consistency
     p = Fluxes2D.pfun(rho,rhou,rhov,E)
     exact_flux_x = (rho*u, rho*u^2 + p, rhou*v, u*(E+p))
@@ -149,6 +156,13 @@ end
     @test all(FxL .≈ exact_flux_x)
     @test all(FyL .≈ exact_flux_y)
     @test all(FzL .≈ exact_flux_z)
+
+    # test type stability
+    @inferred Fluxes3D.primitive_to_conservative(1.1,.2,.3,.4,2.1)
+    @inferred Fluxes3D.v_ufun(UR...)
+    @inferred Fluxes3D.conservative_to_primitive_beta(UL...)
+    @inferred Fluxes3D.conservative_to_primitive_beta(UR...)
+    @inferred Fluxes3D.euler_fluxes_3D(QL...,QR...)
 
     # test entropy conservation property
     # entropy potentials
