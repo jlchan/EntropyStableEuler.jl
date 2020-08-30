@@ -8,6 +8,7 @@ using Test
     @test logmean(uL,uL) ≈ uL
 end
 
+
 @testset "1D entropy variable tests" begin
     using EntropyStableEuler.Fluxes1D
     import EntropyStableEuler: γ,entropy_scale
@@ -99,6 +100,10 @@ end
     FxL,FyL = Fluxes2D.euler_fluxes_2D(QL...,QL...)
     @test all(FxL .≈ exact_flux_x)
     @test all(FyL .≈ exact_flux_y)
+
+    # test individual coordinate fluxes
+    @test all(Fx .≈ Fluxes2D.euler_fluxes_2D_x(QL...,QR...))
+    @test all(Fy .≈ Fluxes2D.euler_fluxes_2D_y(QL...,QR...))
 
     # test entropy conservation property
     # entropy potentials

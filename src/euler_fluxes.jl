@@ -77,8 +77,19 @@ function euler_fluxes_2D(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR,
     return (FxS1,FxS2,FxS3,FxS4),(FyS1,FyS2,FyS3,FyS4)
 end
 
+function euler_fluxes_2D_x(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR)
+    rhologL,betalogL,rhologR,betalogR = log.((rhoL,betaL,rhoR,betaR))
+    return euler_fluxes_2D_x(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR,
+                             rhologL,betalogL,rhologR,betalogR)
+end
+function euler_fluxes_2D_y(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR)
+    rhologL,betalogL,rhologR,betalogR = log.((rhoL,betaL,rhoR,betaR))
+    return euler_fluxes_2D_y(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR,
+                             rhologL,betalogL,rhologR,betalogR)
+end
+
 function euler_fluxes_2D_x(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR,
-                         rhologL,betalogL,rhologR,betalogR)
+                           rhologL,betalogL,rhologR,betalogR)
 
     rholog = logmean.(rhoL,rhoR,rhologL,rhologR)
     betalog = logmean.(betaL,betaR,betalogL,betalogR)
@@ -101,7 +112,7 @@ function euler_fluxes_2D_x(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR,
 end
 
 function euler_fluxes_2D_y(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR,
-                         rhologL,betalogL,rhologR,betalogR)
+                           rhologL,betalogL,rhologR,betalogR)
 
     rholog = logmean.(rhoL,rhoR,rhologL,rhologR)
     betalog = logmean.(betaL,betaR,betalogL,betalogR)
