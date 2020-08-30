@@ -11,7 +11,7 @@ end
 @testset "2D entropy variable tests" begin
     using EntropyStableEuler.Fluxes2D
     import EntropyStableEuler.Fluxes2D: γ
-    
+
     rho,u,v,p = 1,.1,.2,2
     rho,rhou,rhov,E = primitive_to_conservative(rho,u,v,p)
     v1,v2,v3,v4 = v_ufun(rho,rhou,rhov,E)
@@ -39,16 +39,16 @@ end
     QR = conservative_to_primitive_beta(UR...)
     Fx,Fy = euler_fluxes_2D(QL...,QR...)
     Fx2,Fy2 = euler_fluxes_2D(QR...,QL...)
-    @test all(isapprox.(Fx,Fx2))
-    @test all(isapprox.(Fy,Fy2))
+    @test all(Fx .≈ Fx2)
+    @test all(Fy .≈ Fy2)
 
     # test consistency
     p = Fluxes2D.pfun(rho,rhou,rhov,E)
     exact_flux_x = (rho*u, rho*u^2 + p, rhou*v, u*(E+p))
     exact_flux_y = (rho*v, rhou*v, rho*v^2 + p, v*(E+p))
     FxL,FyL = euler_fluxes_2D(QL...,QL...)
-    @test all(isapprox.(FxL,exact_flux_x))
-    @test all(isapprox.(FyL,exact_flux_y))
+    @test all(FxL .≈ exact_flux_x)
+    @test all(FyL .≈ exact_flux_y)
 
     # test entropy conservation property
     vTFx = sum(((x,y,z)->((x-y)*z)).(VL,VR,Fx))
