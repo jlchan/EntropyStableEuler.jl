@@ -36,8 +36,13 @@ end
     Mathematical entropy as a function of conservative variables"
 function Sfun(rho, rhou, rhov, E)
     # return -rho.*sfun(rho, rhou, rhov, E)
-    return -rho.*sfun(rho, rhou, rhov, E)/(γ-1)
+    return -rho.*sfun(rho, rhou, rhov, E)*entropy_scale
 end
+
+const entropy_scale = 1/(γ-1)
+scale_entropy_vars_output(V...) = (x->x*entropy_scale).(V)
+scale_entropy_vars_input(V...) = (x->x/entropy_scale).(V)
+
 
 "function v_ufun(rho, rhou, rhov, E)
     Entropy variables as functions of conservative vars"
@@ -45,20 +50,18 @@ function v_ufun(rho, rhou, rhov, E)
     s = sfun(rho,rhou,rhov,E)
     p = pfun(rho,rhou,rhov,E)
 
-    # v1 = (@. (γ + 1 - s) - (γ-1)*E/p)
-    # vU1,vU2,vE = (x->@. x*(γ-1)/p).((rhou,rhov,-rho))
+    v1 = (@. (γ + 1 - s) - (γ-1)*E/p)
+    vU1,vU2,vE = (x->@. x*(γ-1)/p).((rhou,rhov,-rho))
 
-    v1 = (@. (γ + 1 - s)/(γ-1) - E/p)
-    vU1,vU2,vE = (x->x./p).((rhou,rhov,-rho))
+    # v1 = (@. (γ + 1 - s)/(γ-1) - E/p)
+    # vU1,vU2,vE = (x->x./p).((rhou,rhov,-rho))
 
-    return (v1, vU1, vU2, vE)
+    return scale_entropy_vars_output(v1, vU1, vU2, vE)
 end
 
 #####
 ##### functions of entropy variables
 #####
-
-scaleV(V...) = (x->x.*(γ-1)).(V)
 
 "function s_vfun(v1,vU1,vU2,vE)
     entropy as function of entropy variables"
@@ -77,7 +80,7 @@ end
 "function u_vfun(v1,vU1,vU2,vE)
     Conservative vars as functions of entropy variables"
 function u_vfun(v1,vU1,vU2,vE)
-    v1,vU1,vU2,vE = scaleV(v1,vU1,vU2,vE)
+    v1,vU1,vU2,vE = scale_entropy_vars_input(v1,vU1,vU2,vE)
     rhoeV     = rhoe_vfun(v1,vU1,vU2,vE)
     vUnorm    = @. vU1.^2 + vU2.^2
     rho       = (@. rhoeV*(-vE))
