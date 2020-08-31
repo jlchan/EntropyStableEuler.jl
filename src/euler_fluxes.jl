@@ -1,4 +1,15 @@
 #####
+##### helper functions
+#####
+
+"function wavespeed_1D(rho,rhou,E)
+    one-dimensional wavespeed (for DG penalization terms)"
+function wavespeed_1D(rho,rhou,E)
+    cvel = @. sqrt(γ*pfun(rho,rhou,E)/rho)
+    return @. abs(rhou/rho) + cvel
+end
+
+#####
 ##### one-dimensional fluxes
 #####
 
@@ -30,6 +41,14 @@ function euler_fluxes_1D(rhoL,uL,betaL,rhoR,uR,betaR,
     FxS3 = (@. f4aux*uavg)
 
     return (FxS1,FxS2,FxS3)
+end
+
+function lax_friedrichs_penalty_1D(rhoL,rhouL,EL,rhoR,rhouR,ER)
+    cL = wavespeed_1D(rhoL,rhouL,EL)
+    cR = wavespeed_1D(rhoR,rhouR,ER)
+    c  = max(abs(cL),abs(cR))
+    dU = rhoL-rhoR, rhouL-rhouR, EL-ER
+    return (x->.5*c*x).(dU)
 end
 
 #####
@@ -133,6 +152,18 @@ function euler_fluxes_2D_y(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR,
     return (FyS1,FyS2,FyS3,FyS4)
 end
 
+# function lax_friedrichs_penalty_2D(rhoL,rhouL,rhovL,EL,
+#                                    rhoR,rhouR,rhovR,ER
+#                                    nxL, nxR, nyL, nyR, sJ)
+#     cL = wavespeed_1D(rhoL,rhouL,EL)
+#     cR = wavespeed_1D(rhoR,rhouR,ER)
+#     c  = max(abs(cL),abs(cR))
+#     nx = .5*(nxL+nxR)
+#     ny = .5*(nyL+nyR)
+#     rhoUn = rhouL*nx
+#     dU = rhoL-rhoR, rhouL-rhouR, EL-ER
+#     return (x->.5*c*x).(dU)
+# end
 
 #####
 ##### three-dimensional fluxes

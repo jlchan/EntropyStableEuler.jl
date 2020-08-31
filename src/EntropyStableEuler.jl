@@ -14,14 +14,15 @@ include("./logmean.jl")
 
 # submodules
 export Fluxes1D,Fluxes2D,Fluxes3D
-# export primitive_to_conservative,conservative_to_primitive_beta
-# export u_vfun, v_ufun
 
-# export entropy_scaling,scale_entropy_vars_input,scale_entropy_vars_output
+# for lax-friedrichs flux penalization - make available to all submodules
+export wavespeed_1D
+
+# export entropy_scaling,scale_entropy_input,scale_entropy_output
 # changes definition of entropy variables by a constant scaling
 const entropy_scaling = 1/(γ-1)
-scale_entropy_vars_output(V...) = (x->@. x*entropy_scaling).(V)
-scale_entropy_vars_input(V...) = (x->@. x/entropy_scaling).(V)
+scale_entropy_output(V...) = (x->@. x*entropy_scaling).(V)
+scale_entropy_input(V...) = (x->@. x/entropy_scaling).(V)
 
 #####
 ##### one-dimensional fluxes
@@ -30,10 +31,12 @@ module Fluxes1D
 import ..γ
 import ..entropy_scaling
 import ..EntropyStableEuler: logmean
-import ..EntropyStableEuler: scale_entropy_vars_output, scale_entropy_vars_input
+import ..EntropyStableEuler: scale_entropy_output, scale_entropy_input
 
 export primitive_to_conservative,conservative_to_primitive_beta
 export u_vfun, v_ufun
+
+export wavespeed_1D
 
 # dispatch to n-dimensional constitutive routines, with optional entropy scaling
 function primitive_to_conservative(rho,u,p)
@@ -42,10 +45,10 @@ function primitive_to_conservative(rho,u,p)
 end
 function v_ufun(rho,rhou,E)
     v1,vU,vE = v_ufun_nd(rho,tuple(rhou),E)
-    return scale_entropy_vars_output(v1,vU[1],vE)
+    return scale_entropy_output(v1,vU[1],vE)
 end
 function u_vfun(v1,vU,vE)
-    v1,vU,vE = scale_entropy_vars_input(v1,vU,vE)
+    v1,vU,vE = scale_entropy_input(v1,vU,vE)
     rho,rhoU,E = u_vfun_nd(v1,tuple(vU),vE)
     return rho,rhoU[1],E
 end
@@ -72,7 +75,7 @@ module Fluxes2D
 import ..γ
 import ..entropy_scaling
 import ..EntropyStableEuler: logmean, entropy_scaling
-import ..EntropyStableEuler: scale_entropy_vars_output, scale_entropy_vars_input
+import ..EntropyStableEuler: scale_entropy_output, scale_entropy_input
 
 export primitive_to_conservative,conservative_to_primitive_beta
 export u_vfun, v_ufun
@@ -84,10 +87,10 @@ function primitive_to_conservative(rho,u,v,p)
 end
 function v_ufun(rho,rhou,rhov,E)
     v1,vU,vE = v_ufun_nd(rho,(rhou,rhov),E)
-    return scale_entropy_vars_output(v1,vU...,vE)
+    return scale_entropy_output(v1,vU...,vE)
 end
 function u_vfun(v1,vU1,vU2,vE)
-    v1,vU1,vU2,vE = scale_entropy_vars_input(v1,vU1,vU2,vE)
+    v1,vU1,vU2,vE = scale_entropy_input(v1,vU1,vU2,vE)
     rho,rhoU,E = u_vfun_nd(v1,(vU1,vU2),vE)
     return rho,rhoU...,E
 end
@@ -112,7 +115,7 @@ module Fluxes3D
 import ..γ
 import ..entropy_scaling
 import ..EntropyStableEuler: logmean, entropy_scaling
-import ..EntropyStableEuler: scale_entropy_vars_output, scale_entropy_vars_input
+import ..EntropyStableEuler: scale_entropy_output, scale_entropy_input
 
 export primitive_to_conservative,conservative_to_primitive_beta
 export u_vfun, v_ufun
@@ -124,10 +127,10 @@ function primitive_to_conservative(rho,u,v,w,p)
 end
 function v_ufun(rho,rhou,rhov,rhow,E)
     v1,vU,vE = v_ufun_nd(rho,(rhou,rhov,rhow),E)
-    return scale_entropy_vars_output(v1,vU...,vE)
+    return scale_entropy_output(v1,vU...,vE)
 end
 function u_vfun(v1,vU1,vU2,vU3,vE)
-    v1,vU1,vU2,vU3,vE = scale_entropy_vars_input(v1,vU1,vU2,vU3,vE)
+    v1,vU1,vU2,vU3,vE = scale_entropy_input(v1,vU1,vU2,vU3,vE)
     rho,rhoU,E = u_vfun_nd(v1,(vU1,vU2,vU3),vE)
     return rho,rhoU...,E
 end

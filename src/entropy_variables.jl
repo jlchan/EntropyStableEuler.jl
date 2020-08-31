@@ -58,7 +58,7 @@ function v_ufun_nd(rho, rhoU, E)
     vU = (x->@. x*(γ-1)/p).(rhoU)
     vE = (x->@. x*(γ-1)/p)(-rho)
 
-    # v1,vU,vE = scale_entropy_vars_output(v1, vU, vE)
+    # v1,vU,vE = scale_entropy_output(v1, vU, vE)
     return v1,vU,vE
 end
 
@@ -82,7 +82,7 @@ end
 "function u_vfun(v1,vU,vE)
     Conservative vars as functions of entropy variables"
 function u_vfun_nd(v1,vU,vE)
-    # v1,vU,vE = scale_entropy_vars_input(v1,vU,vE)
+    # v1,vU,vE = scale_entropy_input(v1,vU,vE)
     rhoeV     = rhoe_vfun_nd(v1,vU,vE)
     vUnorm    = unorm(vU)
     rho       = (@. rhoeV*(-vE))
@@ -97,3 +97,31 @@ end
 function conservative_to_primitive_beta_nd(rho,rhoU,E)
     return rho, (x->x./rho).(rhoU), betafun_nd(rho,rhoU,E)
 end
+
+
+# function dUdV_explicit(v1,vU1,vU2,vE)
+#     rho,rhou,rhov,E = u_vfun(v1,vU1,vU2,vE)
+#     u,v = (x->x./rho).((rhou,rhov))
+#     p = pfun(rho,rhou,rhov,E)
+#     a2 = γ*p/rho
+#     H = a2/(γ-1) + (u^2+v^2)/2
+#
+#     dUdV = @SMatrix [rho  rhou        rhov        E;
+#                      rhou rhou*u + p  rhou*v      rhou*H;
+#                      rhov rhov*u      rhov*v + p  rhov*H;
+#                      E    rhou*H      rhov*H      rho*H^2-a2*p/(γ-1)]
+#
+#     return dUdV*(1/(γ-1))
+# end
+#
+# function dVdU_explicit(rho,rhou,rhov,E)
+#     rhoe = rhoe_ufun(rho,rhou,rhov,E)
+#     V = v_ufun(rho,rhou,rhov,E)
+#     k = .5*(V[2]^2+V[3]^2)/V[4]
+#
+#     dVdU = @SMatrix [γ+k^2      k*V[2]          k*V[3]         V[4]*(k+1);
+#                     k*V[2]      V[2]^2-V[4]     V[2]*V[3]      V[2]*V[4];
+#                     k*V[3]      V[2]*V[3]       V[3]^2-V[4]    V[3]*V[4]
+#                     V[4]*(k+1)  V[2]*V[4]       V[3]*V[4]      V[4]^2]
+#     return -dVdU/(rhoe*V[4])
+# end

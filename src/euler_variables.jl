@@ -9,7 +9,6 @@ function wavespeed(rho,rhou,E)
 end
 
 function dUdV_explicit(v1,vU1,vU2,vE)
-
     rho,rhou,rhov,E = u_vfun(v1,vU1,vU2,vE)
     u,v = (x->x./rho).((rhou,rhov))
     p = pfun(rho,rhou,rhov,E)
@@ -25,7 +24,6 @@ function dUdV_explicit(v1,vU1,vU2,vE)
 end
 
 function dVdU_explicit(rho,rhou,rhov,E)
-    #rhoev = rhoe_vfun(V[1],(V[2],V[3]),V[4])
     rhoe = rhoe_ufun(rho,rhou,rhov,E)
     V = v_ufun(rho,rhou,rhov,E)
     k = .5*(V[2]^2+V[3]^2)/V[4]

@@ -113,17 +113,17 @@ end
     @inferred Fluxes2D.conservative_to_primitive_beta(UL...)
     @inferred Fluxes2D.conservative_to_primitive_beta(UR...)
     @inferred Fluxes2D.euler_fluxes_2D(QL...,QR...)
-    using StaticArrays
-    Q = rho,u,v,p
-    U = rho,rhou,rhov,E
-    VU = v1,v2,v3,v4
-    Q = SVector(Q)
-    U = SVector(U)
-    VU = SVector(VU)
-    @inferred Fluxes2D.primitive_to_conservative(Q...);
-    @inferred Fluxes2D.v_ufun(U...);
-    @inferred Fluxes2D.u_vfun(VU...);
-    @inferred Fluxes2D.conservative_to_primitive_beta(U...);
+    # using StaticArrays
+    # Q = rho,u,v,p
+    # U = rho,rhou,rhov,E
+    # VU = v1,v2,v3,v4
+    # Q = SVector(Q)
+    # U = SVector(U)
+    # VU = SVector(VU)
+    # @inferred Fluxes2D.primitive_to_conservative(Q...);
+    # @inferred Fluxes2D.v_ufun(U...);
+    # @inferred Fluxes2D.u_vfun(VU...);
+    # @inferred Fluxes2D.conservative_to_primitive_beta(U...);
 end
 
 
