@@ -11,7 +11,7 @@ end
 
 @testset "1D entropy variable tests" begin
     using EntropyStableEuler.Fluxes1D
-    import EntropyStableEuler: γ,entropy_scale
+    import EntropyStableEuler: γ,entropy_scaling
 
     rho,u,p = 1,.1,2
     rho,rhou,E = Fluxes1D.primitive_to_conservative(rho,u,p)
@@ -47,14 +47,14 @@ end
 
     # test entropy conservation property
     # entropy potentials
-    ψx(U) = (γ-1)*U[2]*entropy_scale
+    ψx(U) = (γ-1)*U[2]*entropy_scaling
     vTFx = sum(((x,y,z)->((x-y)*z)).(VL,VR,Fx))
     @test vTFx ≈ ψx(UL)-ψx(UR)
 end
 
 @testset "2D entropy variable tests" begin
     using EntropyStableEuler.Fluxes2D
-    import EntropyStableEuler: γ,entropy_scale
+    import EntropyStableEuler: γ,entropy_scaling
 
     rho,u,v,p = 1,.1,.2,2
     rho,rhou,rhov,E = Fluxes2D.primitive_to_conservative(rho,u,v,p)
@@ -86,13 +86,6 @@ end
     @test all(Fx .≈ Fx2)
     @test all(Fy .≈ Fy2)
 
-    # test type stability
-    @inferred Fluxes2D.primitive_to_conservative(1.1,.2,.3,2.1)
-    @inferred Fluxes2D.v_ufun(UR...)
-    @inferred Fluxes2D.conservative_to_primitive_beta(UL...)
-    @inferred Fluxes2D.conservative_to_primitive_beta(UR...)
-    @inferred Fluxes2D.euler_fluxes_2D(QL...,QR...)
-
     # test consistency
     p = Fluxes2D.pfun(rho,rhou,rhov,E)
     exact_flux_x = (rho*u, rho*u^2 + p, rhou*v, u*(E+p))
@@ -107,18 +100,36 @@ end
 
     # test entropy conservation property
     # entropy potentials
-    ψx(U) = (γ-1)*U[2]*entropy_scale
-    ψy(U) = (γ-1)*U[3]*entropy_scale
+    ψx(U) = (γ-1)*U[2]*entropy_scaling
+    ψy(U) = (γ-1)*U[3]*entropy_scaling
     vTFx = sum(((x,y,z)->((x-y)*z)).(VL,VR,Fx))
     vTFy = sum(((x,y,z)->((x-y)*z)).(VL,VR,Fy))
     @test vTFx ≈ ψx(UL)-ψx(UR)
     @test vTFy ≈ ψy(UL)-ψy(UR)
+
+    # test type stability
+    @inferred Fluxes2D.primitive_to_conservative(1.1,.2,.3,2.1)
+    @inferred Fluxes2D.v_ufun(UR...)
+    @inferred Fluxes2D.conservative_to_primitive_beta(UL...)
+    @inferred Fluxes2D.conservative_to_primitive_beta(UR...)
+    @inferred Fluxes2D.euler_fluxes_2D(QL...,QR...)
+    using StaticArrays
+    Q = rho,u,v,p
+    U = rho,rhou,rhov,E
+    VU = v1,v2,v3,v4
+    Q = SVector(Q)
+    U = SVector(U)
+    VU = SVector(VU)
+    @inferred Fluxes2D.primitive_to_conservative(Q...);
+    @inferred Fluxes2D.v_ufun(U...);
+    @inferred Fluxes2D.u_vfun(VU...);
+    @inferred Fluxes2D.conservative_to_primitive_beta(U...);
 end
 
 
 @testset "3D entropy variable tests" begin
     using EntropyStableEuler.Fluxes3D
-    import EntropyStableEuler: γ,entropy_scale
+    import EntropyStableEuler: γ,entropy_scaling
 
     rho,u,v,w,p = 1,.1,.2,.3,2
     rho,rhou,rhov,rhow,E = Fluxes3D.primitive_to_conservative(rho,u,v,w,p)
@@ -171,9 +182,9 @@ end
 
     # test entropy conservation property
     # entropy potentials
-    ψx(U) = (γ-1)*U[2]*entropy_scale
-    ψy(U) = (γ-1)*U[3]*entropy_scale
-    ψz(U) = (γ-1)*U[4]*entropy_scale
+    ψx(U) = (γ-1)*U[2]*entropy_scaling
+    ψy(U) = (γ-1)*U[3]*entropy_scaling
+    ψz(U) = (γ-1)*U[4]*entropy_scaling
     vTFx = sum(((x,y,z)->((x-y)*z)).(VL,VR,Fx))
     vTFy = sum(((x,y,z)->((x-y)*z)).(VL,VR,Fy))
     vTFz = sum(((x,y,z)->((x-y)*z)).(VL,VR,Fz))

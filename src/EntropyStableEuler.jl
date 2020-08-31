@@ -12,18 +12,23 @@ const γ = 1.4
 export logmean
 include("./logmean.jl")
 
-# export entropy_scale,scale_entropy_vars_input,scale_entropy_vars_output
+# submodules
+export Fluxes1D,Fluxes2D,Fluxes3D
+# export primitive_to_conservative,conservative_to_primitive_beta
+# export u_vfun, v_ufun
+
+# export entropy_scaling,scale_entropy_vars_input,scale_entropy_vars_output
 # changes definition of entropy variables by a constant scaling
-const entropy_scale = 1/(γ-1)
-scale_entropy_vars_output(V...) = (x->@. x*entropy_scale).(V)
-scale_entropy_vars_input(V...) = (x->@. x/entropy_scale).(V)
+const entropy_scaling = 1/(γ-1)
+scale_entropy_vars_output(V...) = (x->@. x*entropy_scaling).(V)
+scale_entropy_vars_input(V...) = (x->@. x/entropy_scaling).(V)
 
 #####
 ##### one-dimensional fluxes
 #####
 module Fluxes1D
 import ..γ
-import ..entropy_scale
+import ..entropy_scaling
 import ..EntropyStableEuler: logmean
 import ..EntropyStableEuler: scale_entropy_vars_output, scale_entropy_vars_input
 
@@ -65,8 +70,8 @@ end
 #####
 module Fluxes2D
 import ..γ
-import ..entropy_scale
-import ..EntropyStableEuler: logmean, entropy_scale
+import ..entropy_scaling
+import ..EntropyStableEuler: logmean, entropy_scaling
 import ..EntropyStableEuler: scale_entropy_vars_output, scale_entropy_vars_input
 
 export primitive_to_conservative,conservative_to_primitive_beta
@@ -105,8 +110,8 @@ end
 #####
 module Fluxes3D
 import ..γ
-import ..entropy_scale
-import ..EntropyStableEuler: logmean, entropy_scale
+import ..entropy_scaling
+import ..EntropyStableEuler: logmean, entropy_scaling
 import ..EntropyStableEuler: scale_entropy_vars_output, scale_entropy_vars_input
 
 export primitive_to_conservative,conservative_to_primitive_beta
