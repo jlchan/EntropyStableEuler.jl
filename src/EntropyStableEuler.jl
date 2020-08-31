@@ -157,7 +157,7 @@ end
 # export euler_flux_x, euler_flux_y # separate x,y fluxes for faster implicit assembly using ForwardDiff
 # include("./euler_fluxes.jl")
 
-export vortex
-include("./analytic_solutions.jl")
+# export vortex
+# include("./analytic_solutions.jl")
 
 end
