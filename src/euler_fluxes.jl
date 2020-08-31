@@ -43,13 +43,13 @@ function euler_fluxes_1D(rhoL,uL,betaL,rhoR,uR,betaR,
     return (FxS1,FxS2,FxS3)
 end
 
-function lax_friedrichs_penalty_1D(rhoL,rhouL,EL,rhoR,rhouR,ER)
-    cL = wavespeed_1D(rhoL,rhouL,EL)
-    cR = wavespeed_1D(rhoR,rhouR,ER)
-    c  = max(abs(cL),abs(cR))
-    dU = rhoL-rhoR, rhouL-rhouR, EL-ER
-    return (x->.5*c*x).(dU)
-end
+# function lax_friedrichs_penalty_1D(rhoL,rhouL,EL,rhoR,rhouR,ER)
+#     cL = wavespeed_1D(rhoL,rhouL,EL)
+#     cR = wavespeed_1D(rhoR,rhouR,ER)
+#     c  = max(abs(cL),abs(cR))
+#     dU = rhoL-rhoR, rhouL-rhouR, EL-ER
+#     return (x->.5*c*x).(dU)
+# end
 
 #####
 ##### two-dimensional fluxes

@@ -29,11 +29,11 @@ function betafun_nd(rho,rhoU,E)
     return (@. rho/(2*p))
 end
 
-"function rhoe_ufun_nd(rho, rhoU, E)
-    specific energy as a function of conservative variables"
-function rhoe_ufun_nd(rho, rhoU, E)
-    return pfun_nd(rho, rhoU, E) / (γ-1)
-end
+# "function rhoe_ufun_nd(rho, rhoU, E)
+#     specific energy as a function of conservative variables"
+# function rhoe_ufun_nd(rho, rhoU, E)
+#     return pfun_nd(rho, rhoU, E) / (γ-1)
+# end
 
 "function sfun(rho, rhoU, E)
     Specific entropy as a function of conservative variables"
