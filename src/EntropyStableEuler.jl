@@ -20,7 +20,7 @@ export wavespeed_1D
 
 # export entropy_scaling,scale_entropy_input,scale_entropy_output
 # changes definition of entropy variables by a constant scaling
-const entropy_scaling = 1/(γ-1)
+const entropy_scaling = 1/γ # implies vE = -1 /(ι * γ) and γι = non-dim temperature if R* = cp
 scale_entropy_output(V...) = (x->@. x*entropy_scaling).(V)
 scale_entropy_input(V...) = (x->@. x/entropy_scaling).(V)
 
