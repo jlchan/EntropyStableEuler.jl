@@ -1,4 +1,7 @@
-unorm(U) = sum((x->x.^2).(U))
+unorm(U) = sum(map((x->x.^2),U))
+# unorm(U::NTuple{1,T}) where {T} = first(U).^2 # specialize for singleton tuples
+# unorm(U::AbstractArray) = U.^2 # scalar case
+# unorm(U::AbstractFloat) = U^2 # scalar case
 
 "function primitive_to_conservative_nd(rho,u,v,p)
 
@@ -14,6 +17,7 @@ end
 #####
 ##### functions of conservative variables
 #####
+
 "function pfun_nd(rho, rhoU, E)
     pressure as a function of conservative variables (n-dimensional version).
     n-dimensional version where U = tuple(u1,...,u_d)"
