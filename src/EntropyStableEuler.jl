@@ -36,7 +36,8 @@ import ..EntropyStableEuler: scale_entropy_output, scale_entropy_input
 export primitive_to_conservative,conservative_to_primitive_beta
 export u_vfun, v_ufun
 
-export wavespeed_1D
+# export wavespeed_1D
+# include("./euler_fluxes.jl")
 
 # dispatch to n-dimensional constitutive routines, with optional entropy scaling
 function primitive_to_conservative(rho,u,p)
@@ -65,8 +66,6 @@ include("./entropy_variables.jl")
 export euler_fluxes_1D
 include("./euler_fluxes.jl")
 end
-
-import .Fluxes1D: wavespeed_1D
 
 #####
 ##### two-dimensional fluxes
