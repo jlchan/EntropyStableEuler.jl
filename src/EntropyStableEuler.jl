@@ -66,7 +66,7 @@ export euler_fluxes_1D
 include("./euler_fluxes.jl")
 end
 
-
+import .Fluxes1D: wavespeed_1D
 
 #####
 ##### two-dimensional fluxes
