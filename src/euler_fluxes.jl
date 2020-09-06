@@ -16,14 +16,14 @@ end
 "function euler_fluxes_1D(rhoL,uL,betaL,rhoR,uR,betaR)"
 function euler_fluxes_1D(rhoL,uL,betaL,rhoR,uR,betaR)
     rhologL,betalogL,rhologR,betalogR = log.((rhoL,betaL,rhoR,betaR))
-    return euler_fluxes_1D(rhoL,uL,betaL,rhoR,uR,betaR,
-                           rhologL,betalogL,rhologR,betalogR)
+    return euler_fluxes_1D(rhoL,uL,betaL,rhologL,betalogL,
+                           rhoR,uR,betaR,rhologR,betalogR)
 end
 
-"function euler_fluxes_1D(rhoL,uL,betaL,rhoR,uR,betaR,
-                         rhologL,betalogL,rhologR,betalogR)"
-function euler_fluxes_1D(rhoL,uL,betaL,rhoR,uR,betaR,
-                         rhologL,betalogL,rhologR,betalogR)
+"function euler_fluxes_1D(rhoL,uL,betaL,rhologL,betalogL,
+                        rhoR,uR,betaR,rhologR,betalogR)"
+function euler_fluxes_1D(rhoL,uL,betaL,rhologL,betalogL,
+                        rhoR,uR,betaR,rhologR,betalogR)
 
     rholog = logmean.(rhoL,rhoR,rhologL,rhologR)
     betalog = logmean.(betaL,betaR,betalogL,betalogR)
@@ -43,14 +43,6 @@ function euler_fluxes_1D(rhoL,uL,betaL,rhoR,uR,betaR,
     return (FxS1,FxS2,FxS3)
 end
 
-# function lax_friedrichs_penalty_1D(rhoL,rhouL,EL,rhoR,rhouR,ER)
-#     cL = wavespeed_1D(rhoL,rhouL,EL)
-#     cR = wavespeed_1D(rhoR,rhouR,ER)
-#     c  = max(abs(cL),abs(cR))
-#     dU = rhoL-rhoR, rhouL-rhouR, EL-ER
-#     return (x->.5*c*x).(dU)
-# end
-
 #####
 ##### two-dimensional fluxes
 #####
@@ -59,8 +51,8 @@ assumes primitive variables ordering: UL = (rhoL,uL,...,betaL),
                                       UR = (rhoR,uR,...,betaR)"
 function euler_fluxes_2D(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR)
     rhologL,betalogL,rhologR,betalogR = log.((rhoL,betaL,rhoR,betaR))
-    return euler_fluxes_2D(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR,
-                           rhologL,betalogL,rhologR,betalogR)
+    return euler_fluxes_2D(rhoL,uL,vL,betaL,rhologL,betalogL,
+                           rhoR,uR,vR,betaR,rhologR,betalogR)
 end
 
 "
@@ -69,8 +61,8 @@ function euler_fluxes_2D(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR,
 assumes primitive variables ordering: UL = (rhoL,uL,...,betaL),
                                       UR = (rhoR,uR,...,betaR)
 "
-function euler_fluxes_2D(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR,
-                         rhologL,betalogL,rhologR,betalogR)
+function euler_fluxes_2D(rhoL,uL,vL,betaL,rhologL,betalogL,
+                         rhoR,uR,vR,betaR,rhologR,betalogR)
 
     rholog = logmean.(rhoL,rhoR,rhologL,rhologR)
     betalog = logmean.(betaL,betaR,betalogL,betalogR)
@@ -98,17 +90,17 @@ end
 
 function euler_fluxes_2D_x(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR)
     rhologL,betalogL,rhologR,betalogR = log.((rhoL,betaL,rhoR,betaR))
-    return euler_fluxes_2D_x(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR,
-                             rhologL,betalogL,rhologR,betalogR)
+    return euler_fluxes_2D_x(rhoL,uL,vL,betaL,rhologL,betalogL,
+                             rhoR,uR,vR,betaR,rhologR,betalogR)
 end
 function euler_fluxes_2D_y(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR)
     rhologL,betalogL,rhologR,betalogR = log.((rhoL,betaL,rhoR,betaR))
-    return euler_fluxes_2D_y(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR,
-                             rhologL,betalogL,rhologR,betalogR)
+    return euler_fluxes_2D_y(rhoL,uL,vL,betaL,rhologL,betalogL,
+                             rhoR,uR,vR,betaR,rhologR,betalogR)
 end
 
-function euler_fluxes_2D_x(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR,
-                           rhologL,betalogL,rhologR,betalogR)
+function euler_fluxes_2D_x(rhoL,uL,vL,betaL,rhologL,betalogL,
+                           rhoR,uR,vR,betaR,rhologR,betalogR)
 
     rholog = logmean.(rhoL,rhoR,rhologL,rhologR)
     betalog = logmean.(betaL,betaR,betalogL,betalogR)
@@ -130,8 +122,8 @@ function euler_fluxes_2D_x(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR,
     return (FxS1,FxS2,FxS3,FxS4)
 end
 
-function euler_fluxes_2D_y(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR,
-                           rhologL,betalogL,rhologR,betalogR)
+function euler_fluxes_2D_y(rhoL,uL,vL,betaL,rhologL,betalogL,
+                           rhoR,uR,vR,betaR,rhologR,betalogR)
 
     rholog = logmean.(rhoL,rhoR,rhologL,rhologR)
     betalog = logmean.(betaL,betaR,betalogL,betalogR)
@@ -152,33 +144,20 @@ function euler_fluxes_2D_y(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR,
     return (FyS1,FyS2,FyS3,FyS4)
 end
 
-# function lax_friedrichs_penalty_2D(rhoL,rhouL,rhovL,EL,
-#                                    rhoR,rhouR,rhovR,ER
-#                                    nxL, nxR, nyL, nyR, sJ)
-#     cL = wavespeed_1D(rhoL,rhouL,EL)
-#     cR = wavespeed_1D(rhoR,rhouR,ER)
-#     c  = max(abs(cL),abs(cR))
-#     nx = .5*(nxL+nxR)
-#     ny = .5*(nyL+nyR)
-#     rhoUn = rhouL*nx
-#     dU = rhoL-rhoR, rhouL-rhouR, EL-ER
-#     return (x->.5*c*x).(dU)
-# end
-
 #####
 ##### three-dimensional fluxes
 #####
 "function euler_fluxes_3D(rhoL,uL,vL,wL,betaL,rhoR,uR,vR,wR,betaR)"
 function euler_fluxes_3D(rhoL,uL,vL,wL,betaL,rhoR,uR,vR,wR,betaR)
     rhologL,betalogL,rhologR,betalogR = log.((rhoL,betaL,rhoR,betaR))
-    return euler_fluxes_3D(rhoL,uL,vL,wL,betaL,rhoR,uR,vR,wR,betaR,
-                           rhologL,betalogL,rhologR,betalogR)
+    return euler_fluxes_3D(rhoL,uL,vL,wL,betaL,rhologL,betalogL,
+                           rhoR,uR,vR,wR,betaR,rhologR,betalogR)
 end
 
-"function euler_fluxes_3D(rhoL,uL,vL,wL,betaL,rhoR,uR,vR,wR,betaR
-                          rhologL,betalogL,rhologR,betalogR)"
-function euler_fluxes_3D(rhoL,uL,vL,wL,betaL,rhoR,uR,vR,wR,betaR,
-                         rhologL,betalogL,rhologR,betalogR)
+"function euler_fluxes_3D(rhoL,uL,vL,wL,betaL,rhologL,betalogL,
+                         rhoR,uR,vR,wR,betaR,rhologR,betalogR)"
+function euler_fluxes_3D(rhoL,uL,vL,wL,betaL,rhologL,betalogL,
+                         rhoR,uR,vR,wR,betaR,rhologR,betalogR)
 
     rholog = logmean.(rhoL,rhoR,rhologL,rhologR)
     betalog = logmean.(betaL,betaR,betalogL,betalogR)
