@@ -15,7 +15,7 @@ end
 
 "function euler_fluxes_1D(rhoL,uL,betaL,rhoR,uR,betaR)"
 function euler_fluxes_1D(rhoL,uL,betaL,rhoR,uR,betaR)
-    rhologL,betalogL,rhologR,betalogR = log.((rhoL,betaL,rhoR,betaR))
+    rhologL,betalogL,rhologR,betalogR = map(x->log.(x),(rhoL,betaL,rhoR,betaR))
     return euler_fluxes_1D(rhoL,uL,betaL,rhologL,betalogL,
                            rhoR,uR,betaR,rhologR,betalogR)
 end
