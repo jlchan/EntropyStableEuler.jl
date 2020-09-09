@@ -51,7 +51,7 @@ end
 assumes primitive variables ordering: UL = (rhoL,uL,...,betaL),
                                       UR = (rhoR,uR,...,betaR)"
 function euler_fluxes_2D(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR)
-    rhologL,betalogL,rhologR,betalogR = log.((rhoL,betaL,rhoR,betaR))
+    rhologL,betalogL,rhologR,betalogR = map(x->log.(x),(rhoL,betaL,rhoR,betaR))
     return euler_fluxes_2D(rhoL,uL,vL,betaL,rhologL,betalogL,
                            rhoR,uR,vR,betaR,rhologR,betalogR)
 end
@@ -90,12 +90,12 @@ function euler_fluxes_2D(rhoL,uL,vL,betaL,rhologL,betalogL,
 end
 
 function euler_fluxes_2D_x(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR)
-    rhologL,betalogL,rhologR,betalogR = log.((rhoL,betaL,rhoR,betaR))
+    rhologL,betalogL,rhologR,betalogR = map(x->log.(x),(rhoL,betaL,rhoR,betaR))
     return euler_fluxes_2D_x(rhoL,uL,vL,betaL,rhologL,betalogL,
                              rhoR,uR,vR,betaR,rhologR,betalogR)
 end
 function euler_fluxes_2D_y(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR)
-    rhologL,betalogL,rhologR,betalogR = log.((rhoL,betaL,rhoR,betaR))
+    rhologL,betalogL,rhologR,betalogR = map(x->log.(x),(rhoL,betaL,rhoR,betaR))
     return euler_fluxes_2D_y(rhoL,uL,vL,betaL,rhologL,betalogL,
                              rhoR,uR,vR,betaR,rhologR,betalogR)
 end
@@ -150,7 +150,7 @@ end
 #####
 "function euler_fluxes_3D(rhoL,uL,vL,wL,betaL,rhoR,uR,vR,wR,betaR)"
 function euler_fluxes_3D(rhoL,uL,vL,wL,betaL,rhoR,uR,vR,wR,betaR)
-    rhologL,betalogL,rhologR,betalogR = log.((rhoL,betaL,rhoR,betaR))
+    rhologL,betalogL,rhologR,betalogR = map(x->log.(x),(rhoL,betaL,rhoR,betaR))
     return euler_fluxes_3D(rhoL,uL,vL,wL,betaL,rhologL,betalogL,
                            rhoR,uR,vR,wR,betaR,rhologR,betalogR)
 end
