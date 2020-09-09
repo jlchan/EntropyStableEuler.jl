@@ -28,8 +28,10 @@ rhoL,uL,vL,betaL = conservative_to_primitive_beta(rhoL,rhouL,rhovL,EL)
 rhoR,uR,vR,betaR = conservative_to_primitive_beta(rhoR,rhouR,rhovR,ER)
 
 # evaluate fluxes
-Fx,Fy = euler_fluxes_2D(rhoL,uL,vL,betaL,
-                        rhoR,uR,vR,betaR)
+Fx,Fy = euler_fluxes_2D(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR)
+# can also pass in log values to save time
+#      euler_fluxes_2D(rhoL,uL,vL,betaL,rhologL,betalogL,
+#                      rhoR,uR,vR,betaR,rhologR,betalogR)
 ```
 
 # To-do
