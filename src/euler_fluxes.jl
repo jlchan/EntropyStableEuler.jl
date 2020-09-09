@@ -5,7 +5,8 @@
 "function wavespeed_1D(rho,rhou,E)
     one-dimensional wavespeed (for DG penalization terms)"
 function wavespeed_1D(rho,rhou,E)
-    cvel = @. sqrt(γ*pfun_nd(rho,(rhou,),E)/rho)
+    p = pfun_nd(rho,(rhou,),E)
+    cvel = @. sqrt(γ*p/rho)
     return @. abs(rhou/rho) + cvel
 end
 
