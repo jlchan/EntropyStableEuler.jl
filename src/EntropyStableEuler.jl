@@ -36,8 +36,8 @@ import ..EntropyStableEuler: scale_entropy_output, scale_entropy_input
 export primitive_to_conservative,conservative_to_primitive_beta
 export u_vfun, v_ufun
 
-# export wavespeed_1D
-# include("./euler_fluxes.jl")
+export wavespeed_1D # export wavespeed to main modules
+include("./euler_fluxes.jl")
 
 # dispatch to n-dimensional constitutive routines, with optional entropy scaling
 function primitive_to_conservative(rho,u,p)
