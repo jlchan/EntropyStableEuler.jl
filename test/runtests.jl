@@ -42,7 +42,7 @@ end
     # test consistency
     p = Fluxes1D.pfun(rho,rhou,E)
     exact_flux_x = (rho*u, rho*u^2 + p, u*(E+p))
-    FxL = Fluxes1D.euler_fluxes_1D(QL...,QL...)
+    FxL = Fluxes1D.euler_fluxes(QL...,QL...)
     @test all(FxL .≈ exact_flux_x)
 
     # test entropy conservation property
@@ -81,8 +81,8 @@ end
     VR = Fluxes2D.v_ufun(UR...)
     QL = Fluxes2D.conservative_to_primitive_beta(UL...)
     QR = Fluxes2D.conservative_to_primitive_beta(UR...)
-    Fx,Fy = Fluxes2D.euler_fluxes_2D(QL...,QR...)
-    Fx2,Fy2 = Fluxes2D.euler_fluxes_2D(QR...,QL...)
+    Fx,Fy = Fluxes2D.euler_fluxes(QL...,QR...)
+    Fx2,Fy2 = Fluxes2D.euler_fluxes(QR...,QL...)
     @test all(Fx .≈ Fx2)
     @test all(Fy .≈ Fy2)
 
@@ -90,7 +90,7 @@ end
     p = Fluxes2D.pfun(rho,rhou,rhov,E)
     exact_flux_x = (rho*u, rho*u^2 + p, rhou*v, u*(E+p))
     exact_flux_y = (rho*v, rhou*v, rho*v^2 + p, v*(E+p))
-    FxL,FyL = Fluxes2D.euler_fluxes_2D(QL...,QL...)
+    FxL,FyL = Fluxes2D.euler_fluxes(QL...,QL...)
     @test all(FxL .≈ exact_flux_x)
     @test all(FyL .≈ exact_flux_y)
 
@@ -112,7 +112,7 @@ end
     @inferred Fluxes2D.v_ufun(UR...)
     @inferred Fluxes2D.conservative_to_primitive_beta(UL...)
     @inferred Fluxes2D.conservative_to_primitive_beta(UR...)
-    @inferred Fluxes2D.euler_fluxes_2D(QL...,QR...)
+    @inferred Fluxes2D.euler_fluxes(QL...,QR...)
     # using StaticArrays
     # Q = rho,u,v,p
     # U = rho,rhou,rhov,E
@@ -157,8 +157,8 @@ end
     VR = Fluxes3D.v_ufun(UR...)
     QL = Fluxes3D.conservative_to_primitive_beta(UL...)
     QR = Fluxes3D.conservative_to_primitive_beta(UR...)
-    Fx,Fy,Fz = Fluxes3D.euler_fluxes_3D(QL...,QR...)
-    Fx2,Fy2,Fz2 = Fluxes3D.euler_fluxes_3D(QR...,QL...)
+    Fx,Fy,Fz = Fluxes3D.euler_fluxes(QL...,QR...)
+    Fx2,Fy2,Fz2 = Fluxes3D.euler_fluxes(QR...,QL...)
     @test all(Fx .≈ Fx2)
     @test all(Fy .≈ Fy2)
     @test all(Fz .≈ Fz2)
@@ -168,7 +168,7 @@ end
     exact_flux_x = (rho*u, rho*u^2 + p, rhou*v,      rhou*w,      u*(E+p))
     exact_flux_y = (rho*v, rhov*u,      rho*v^2 + p, rhov*w,      v*(E+p))
     exact_flux_z = (rho*w, rhow*u,      rhow*v,      rho*w^2 + p, w*(E+p))
-    FxL,FyL,FzL = Fluxes3D.euler_fluxes_3D(QL...,QL...)
+    FxL,FyL,FzL = Fluxes3D.euler_fluxes(QL...,QL...)
     @test all(FxL .≈ exact_flux_x)
     @test all(FyL .≈ exact_flux_y)
     @test all(FzL .≈ exact_flux_z)
@@ -178,7 +178,7 @@ end
     @inferred Fluxes3D.v_ufun(UR...)
     @inferred Fluxes3D.conservative_to_primitive_beta(UL...)
     @inferred Fluxes3D.conservative_to_primitive_beta(UR...)
-    @inferred Fluxes3D.euler_fluxes_3D(QL...,QR...)
+    @inferred Fluxes3D.euler_fluxes(QL...,QR...)
 
     # test entropy conservation property
     # entropy potentials
