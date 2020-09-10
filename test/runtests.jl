@@ -35,8 +35,8 @@ end
     VR = Fluxes1D.v_ufun(UR...)
     QL = Fluxes1D.conservative_to_primitive_beta(UL...)
     QR = Fluxes1D.conservative_to_primitive_beta(UR...)
-    Fx = Fluxes1D.euler_fluxes_1D(QL...,QR...)
-    Fx2 = Fluxes1D.euler_fluxes_1D(QR...,QL...)
+    Fx = Fluxes1D.euler_fluxes(QL...,QR...)
+    Fx2 = Fluxes1D.euler_fluxes(QR...,QL...)
     @test all(Fx .≈ Fx2)
 
     # test consistency

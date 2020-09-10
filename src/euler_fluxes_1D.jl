@@ -14,13 +14,6 @@ end
 ##### one-dimensional fluxes
 #####
 
-"function euler_fluxes_1D(rhoL,uL,betaL,rhoR,uR,betaR)"
-function euler_fluxes_1D(rhoL,uL,betaL,rhoR,uR,betaR)
-    rhologL,betalogL,rhologR,betalogR = map(x->log.(x),(rhoL,betaL,rhoR,betaR))
-    return euler_fluxes_1D(rhoL,uL,betaL,rhologL,betalogL,
-                           rhoR,uR,betaR,rhologR,betalogR)
-end
-
 "function euler_fluxes_1D(rhoL,uL,betaL,rhologL,betalogL,
                         rhoR,uR,betaR,rhologR,betalogR)"
 function euler_fluxes_1D(rhoL,uL,betaL,rhologL,betalogL,
@@ -71,7 +64,11 @@ end
 Sfun(rho,rhou,E) = Sfun_nd(rho,tuple(rhou),E)
 pfun(rho,rhou,E) = pfun_nd(rho,tuple(rhou),E)
 
-euler_fluxes(rhoL,uL,betaL,rhoR,uR,betaR) =
-    euler_fluxes_1D(rhoL,uL,betaL,rhoR,uR,betaR)
+"function euler_fluxes_1D(rhoL,uL,betaL,rhoR,uR,betaR)"
+function euler_fluxes(rhoL,uL,betaL,rhoR,uR,betaR)
+    rhologL,betalogL,rhologR,betalogR = map(x->log.(x),(rhoL,betaL,rhoR,betaR))
+    return euler_fluxes_1D(rhoL,uL,betaL,rhologL,betalogL,
+                           rhoR,uR,betaR,rhologR,betalogR)
+end
 euler_fluxes(rhoL,uL,betaL,rhologL,betalogL,rhoR,uR,betaR,rhologR,betalogR) =
     euler_fluxes_1D(rhoL,uL,betaL,rhologL,betalogL,rhoR,uR,betaR,rhologR,betalogR)

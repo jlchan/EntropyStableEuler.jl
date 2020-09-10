@@ -1,15 +1,6 @@
 #####
 ##### two-dimensional fluxes
 #####
-"function euler_fluxes_2D(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR)
-assumes primitive variables ordering: UL = (rhoL,uL,...,betaL),
-                                      UR = (rhoR,uR,...,betaR)"
-function euler_fluxes_2D(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR)
-    rhologL,betalogL,rhologR,betalogR = map(x->log.(x),(rhoL,betaL,rhoR,betaR))
-    return euler_fluxes_2D(rhoL,uL,vL,betaL,rhologL,betalogL,
-                           rhoR,uR,vR,betaR,rhologR,betalogR)
-end
-
 "
 function euler_fluxes_2D(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR,
                          rhologL,betalogL,rhologR,betalogR)
@@ -126,7 +117,16 @@ end
 Sfun(rho,rhou,rhov,E) = Sfun_nd(rho,(rhou,rhov),E)
 pfun(rho,rhou,rhov,E) = pfun_nd(rho,(rhou,rhov),E)
 
-euler_fluxes(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR) =
-     euler_fluxes_2D(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR)
-euler_fluxes(rhoL,uL,vL,betaL,rhologL,betalogL,rhoR,uR,vR,betaR,rhologR,betalogR) =
-     euler_fluxes_2D(rhoL,uL,vL,betaL,rhologL,betalogL,rhoR,uR,vR,betaR,rhologR,betalogR)
+"function euler_fluxes_2D(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR)
+assumes primitive variables ordering: UL = (rhoL,uL,...,betaL),
+                                      UR = (rhoR,uR,...,betaR)"
+function euler_fluxes(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR)
+    rhologL,betalogL,rhologR,betalogR = map(x->log.(x),(rhoL,betaL,rhoR,betaR))
+    return euler_fluxes_2D(rhoL,uL,vL,betaL,rhologL,betalogL,
+                           rhoR,uR,vR,betaR,rhologR,betalogR)
+end
+
+euler_fluxes(rhoL,uL,vL,betaL,rhologL,betalogL,
+             rhoR,uR,vR,betaR,rhologR,betalogR) =
+     euler_fluxes_2D(rhoL,uL,vL,betaL,rhologL,betalogL,
+                     rhoR,uR,vR,betaR,rhologR,betalogR)

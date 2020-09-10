@@ -1,12 +1,6 @@
 #####
 ##### three-dimensional fluxes
 #####
-"function euler_fluxes_3D(rhoL,uL,vL,wL,betaL,rhoR,uR,vR,wR,betaR)"
-function euler_fluxes_3D(rhoL,uL,vL,wL,betaL,rhoR,uR,vR,wR,betaR)
-    rhologL,betalogL,rhologR,betalogR = map(x->log.(x),(rhoL,betaL,rhoR,betaR))
-    return euler_fluxes_3D(rhoL,uL,vL,wL,betaL,rhologL,betalogL,
-                           rhoR,uR,vR,wR,betaR,rhologR,betalogR)
-end
 
 "function euler_fluxes_3D(rhoL,uL,vL,wL,betaL,rhologL,betalogL,
                          rhoR,uR,vR,wR,betaR,rhologR,betalogR)"
@@ -77,7 +71,13 @@ end
 Sfun(rho,rhou,rhov,rhow,E) = Sfun_nd(rho,(rhou,rhov,rhow),E)
 pfun(rho,rhou,rhov,rhow,E) = pfun_nd(rho,(rhou,rhov,rhow),E)
 
-euler_fluxes(rhoL,uL,vL,wL,betaL,rhoR,uR,vR,wR,betaR) =
-     euler_fluxes_3D(rhoL,uL,vL,wL,betaL,rhoR,uR,vR,wR,betaR)
-euler_fluxes(rhoL,uL,vL,wL,betaL,rhologL,betalogL,rhoR,uR,vR,wR,betaR,rhologR,betalogR) =
-     euler_fluxes_3D(rhoL,uL,vL,wL,betaL,rhologL,betalogL,rhoR,uR,vR,wR,betaR,rhologR,betalogR)
+"function euler_fluxes_3D(rhoL,uL,vL,wL,betaL,rhoR,uR,vR,wR,betaR)"
+function euler_fluxes(rhoL,uL,vL,wL,betaL,rhoR,uR,vR,wR,betaR)
+    rhologL,betalogL,rhologR,betalogR = map(x->log.(x),(rhoL,betaL,rhoR,betaR))
+    return euler_fluxes_3D(rhoL,uL,vL,wL,betaL,rhologL,betalogL,
+                           rhoR,uR,vR,wR,betaR,rhologR,betalogR)
+end
+euler_fluxes(rhoL,uL,vL,wL,betaL,rhologL,betalogL,
+             rhoR,uR,vR,wR,betaR,rhologR,betalogR) =
+     euler_fluxes_3D(rhoL,uL,vL,wL,betaL,rhologL,betalogL,
+                     rhoR,uR,vR,wR,betaR,rhologR,betalogR)
