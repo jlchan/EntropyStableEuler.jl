@@ -19,7 +19,6 @@ For example, Fluxes2D exports
 using EntropyStableEuler.Fluxes2D
 
 # construct solution at two states
-
 rhoL,rhouL,rhovL,EL = map(x->x.*ones(4),(1,.1,.2,2))
 rhoR,rhouR,rhovR,ER = map(x->x.+.1*randn(4),(rhoL,rhouL,rhovL,EL)) # small perturbation
 
@@ -30,7 +29,7 @@ rhoR,uR,vR,betaR = conservative_to_primitive_beta(rhoR,rhouR,rhovR,ER)
 # evaluate fluxes
 Fx,Fy = euler_fluxes(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR)
 
-# can also pass in log values for efficiency
+# can also pass in precomputed log values for efficiency
 #      euler_fluxes(rhoL,uL,vL,betaL,rhologL,betalogL,
 #                   rhoR,uR,vR,betaR,rhologR,betalogR)
 ```
