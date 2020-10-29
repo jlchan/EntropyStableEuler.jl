@@ -70,6 +70,7 @@ end
 
 Sfun(rho,rhou,rhov,rhow,E) = Sfun_nd(rho,(rhou,rhov,rhow),E)
 pfun(rho,rhou,rhov,rhow,E) = pfun_nd(rho,(rhou,rhov,rhow),E)
+betafun(rho,rhou,rhov,rhow,E) = betafun_nd(rho,(rhou,rhov,rhow),E)
 
 "function euler_fluxes_3D(rhoL,uL,vL,wL,betaL,rhoR,uR,vR,wR,betaR)"
 function euler_fluxes(rhoL,uL,vL,wL,betaL,rhoR,uR,vR,wR,betaR)

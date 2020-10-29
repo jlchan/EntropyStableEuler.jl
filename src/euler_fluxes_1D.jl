@@ -63,6 +63,7 @@ end
 
 Sfun(rho,rhou,E) = Sfun_nd(rho,tuple(rhou),E)
 pfun(rho,rhou,E) = pfun_nd(rho,tuple(rhou),E)
+betafun(rho,rhou,E) = betafun_nd(rho,tuple(rhou),E)
 
 "function euler_fluxes_1D(rhoL,uL,betaL,rhoR,uR,betaR)"
 function euler_fluxes(rhoL,uL,betaL,rhoR,uR,betaR)

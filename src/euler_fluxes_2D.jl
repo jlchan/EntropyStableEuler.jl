@@ -116,6 +116,7 @@ end
 
 Sfun(rho,rhou,rhov,E) = Sfun_nd(rho,(rhou,rhov),E)
 pfun(rho,rhou,rhov,E) = pfun_nd(rho,(rhou,rhov),E)
+betafun(rho,rhou,rhov,E) = betafun_nd(rho,(rhou,rhov),E)
 
 "function euler_fluxes_2D(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR)
 assumes primitive variables ordering: UL = (rhoL,uL,...,betaL),

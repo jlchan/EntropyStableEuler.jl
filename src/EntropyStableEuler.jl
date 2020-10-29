@@ -37,7 +37,7 @@ export wavespeed_1D
 export primitive_to_conservative, conservative_to_primitive_beta
 export u_vfun, v_ufun
 export euler_fluxes
-export Sfun,pfun
+export Sfun,pfun,betafun
 include("./euler_fluxes_1D.jl")
 include("./entropy_variables.jl")
 end
@@ -53,7 +53,7 @@ import ..EntropyStableEuler: scale_entropy_output, scale_entropy_input
 
 export primitive_to_conservative,conservative_to_primitive_beta
 export u_vfun, v_ufun
-export Sfun,pfun
+export Sfun,pfun,betafun
 export euler_fluxes
 
 include("./entropy_variables.jl")
@@ -71,7 +71,7 @@ import ..EntropyStableEuler: scale_entropy_output, scale_entropy_input
 
 export primitive_to_conservative,conservative_to_primitive_beta
 export u_vfun, v_ufun
-export Sfun,pfun
+export Sfun,pfun,betafun
 export euler_fluxes
 
 include("./entropy_variables.jl")
