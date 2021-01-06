@@ -1,23 +1,3 @@
-#####
-##### helper functions
-#####
-
-"""
-    wavespeed(eqn::Euler{1},U)
-
-one-dimensional wavespeed (for DG penalization terms)
-"""
-function wavespeed(eqn::Euler{1},U)
-    rho,rhou,_ = unpackfields(eqn,U)
-    p = pfun(eqn,U)
-    cvel = @. sqrt(γ*p/rho)
-    return @. abs(rhou/rho) + cvel
-end
-
-#####
-##### one-dimensional fluxes
-#####
-
 function fS(eqn::Euler{d},UL,UR) where {d}
     QL = cons_to_prim_beta(eqn,UL)
     QR = cons_to_prim_beta(eqn,UR)
