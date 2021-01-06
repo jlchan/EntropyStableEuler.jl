@@ -97,7 +97,6 @@ end
 end
 
 @testset "Check type stability for d=$d" for d in (1:3)
-
     Q = init_prim(d)
     U = prim_to_cons(Euler{d}(),Q)
     V = v_ufun(Euler{d}(),U)
@@ -108,82 +107,3 @@ end
     @inferred u_vfun(Euler{d}(),V)
     @inferred fS(Euler{d}(),U,U)
 end
-#
-# @testset "3D entropy variable tests" begin
-#     using EntropyStableEuler.Fluxes3D
-#     import EntropyStableEuler: γ
-#
-#     rho,u,v,w,p = 1,.1,.2,.3,2
-#     rho,rhou,rhov,rhow,E = Fluxes3D.primitive_to_conservative(rho,u,v,w,p)
-#     v1,v2,v3,v4,v5 = Fluxes3D.v_ufun(rho,rhou,rhov,rhow,E)
-#
-#     h = 1e-7
-#     central_diff(f,x) = (f(x+h) - f(x-h))/(2*h)
-#     @test abs(v1 - central_diff(rho->Fluxes3D.Sfun(rho,rhou,rhov,rhow,E),rho)) < h
-#     @test abs(v2 - central_diff(rhou->Fluxes3D.Sfun(rho,rhou,rhov,rhow,E),rhou)) < h
-#     @test abs(v3 - central_diff(rhov->Fluxes3D.Sfun(rho,rhou,rhov,rhow,E),rhov)) < h
-#     @test abs(v4 - central_diff(rhow->Fluxes3D.Sfun(rho,rhou,rhov,rhow,E),rhow)) < h
-#     @test abs(v5 - central_diff(E->Fluxes3D.Sfun(rho,rhou,rhov,rhow,E),E)) < h
-#
-#     u1,u2,u3,u4,u5 = Fluxes3D.u_vfun(v1,v2,v3,v4,v5)
-#     @test u1 ≈ rho
-#     @test u2 ≈ rhou
-#     @test u3 ≈ rhov
-#     @test u4 ≈ rhow
-#     @test u5 ≈ E
-#
-#     # test symmetry
-#     UL = copy.((rho,rhou,rhov,rhow,E))
-#     VL = copy.((v1,v2,v3,v4,v5))
-#     UR = Fluxes3D.primitive_to_conservative(1.1,.2,.3,.4,2.1)
-#     VR = Fluxes3D.v_ufun(UR...)
-#     QL = Fluxes3D.conservative_to_primitive_beta(UL...)
-#     QR = Fluxes3D.conservative_to_primitive_beta(UR...)
-#     Fx,Fy,Fz = Fluxes3D.euler_flux_prim(QL...,QR...)
-#     Fx2,Fy2,Fz2 = Fluxes3D.euler_flux_prim(QR...,QL...)
-#     @test all(Fx .≈ Fx2)
-#     @test all(Fy .≈ Fy2)
-#     @test all(Fz .≈ Fz2)
-#
-#     # test consistency
-#     p = Fluxes3D.pfun(rho,rhou,rhov,rhow,E)
-#     exact_flux_x = (rho*u, rho*u^2 + p, rhou*v,      rhou*w,      u*(E+p))
-#     exact_flux_y = (rho*v, rhov*u,      rho*v^2 + p, rhov*w,      v*(E+p))
-#     exact_flux_z = (rho*w, rhow*u,      rhow*v,      rho*w^2 + p, w*(E+p))
-#     FxL,FyL,FzL = Fluxes3D.euler_flux_prim(QL...,QL...)
-#     @test all(FxL .≈ exact_flux_x)
-#     @test all(FyL .≈ exact_flux_y)
-#     @test all(FzL .≈ exact_flux_z)
-#
-#     # # test type stability
-#     # @inferred Fluxes3D.primitive_to_conservative(1.1,.2,.3,.4,2.1)
-#     # @inferred Fluxes3D.v_ufun(UR...)
-#     # @inferred Fluxes3D.conservative_to_primitive_beta(UL...)
-#     # @inferred Fluxes3D.conservative_to_primitive_beta(UR...)
-#     # @inferred Fluxes3D.euler_flux_prim(QL...,QR...)
-#
-#     # test entropy conservation property
-#     # entropy potentials
-#     ψx(U) = (γ-1)*U[2]
-#     ψy(U) = (γ-1)*U[3]
-#     ψz(U) = (γ-1)*U[4]
-#     vTFx = sum(((x,y,z)->((x-y)*z)).(VL,VR,Fx))
-#     vTFy = sum(((x,y,z)->((x-y)*z)).(VL,VR,Fy))
-#     vTFz = sum(((x,y,z)->((x-y)*z)).(VL,VR,Fz))
-#     @test vTFx ≈ ψx(UL)-ψx(UR)
-#     @test vTFy ≈ ψy(UL)-ψy(UR)
-#     @test vTFz ≈ ψz(UL)-ψz(UR)
-# end
-
-# module bar
-# export f
-# f(x) = f(x...) # dispatch
-# module foo1
-# import ..bar: f
-# f(x1,x2) = x1+x2
-# end
-# module foo2
-# import ..bar: f
-# f(x1,x2,x3) = x1+x2+x3
-# end
-# end

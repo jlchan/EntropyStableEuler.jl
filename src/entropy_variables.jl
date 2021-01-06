@@ -1,8 +1,26 @@
 unorm(U) = sum(map((x->x.^2),U))
 
 function unpackfields(eqn::Euler{d},U) where {d}
-    return first(U),U[2:d+1],last(U)
+    return first(U),ntuple(i->U[i+1],d),last(U)
 end
+
+# struct bar{d} end
+# foo1(a::bar{d},x) where {d} = x[1:d]
+# foo2(a::bar{d},x) where {d} = x[2:d+1]
+# foo3(a::bar{d},x) where {d} = ntuple(i -> x[i+1], d)
+#
+# @inf
+# function unpackfields(eqn::Euler{1},U)
+#     return first(U),U[2:2],last(U)
+# end
+#
+# function unpackfields(eqn::Euler{2},U) where {d}
+#     return first(U),U[2:3],last(U)
+# end
+#
+# function unpackfields(eqn::Euler{3},U) where {d}
+#     return first(U),U[2:4],last(U)
+# end
 
 """
     function prim_to_cons(eqn::Euler{d},rho,U,p) where {d}
