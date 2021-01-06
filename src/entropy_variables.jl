@@ -1,107 +1,94 @@
 unorm(U) = sum(map((x->x.^2),U))
-# unorm(U::NTuple{1,T}) where {T} = first(U).^2 # specialize for singleton tuples
-# unorm(U::AbstractArray) = U.^2 # scalar case
-# unorm(U::AbstractFloat) = U^2 # scalar case
 
-"function primitive_to_conservative_nd(rho,u,v,p)
+function unpackfields(eqn::Euler{d},U) where {d}
+    return first(U),U[2:d+1],last(U)
+end
 
-    convert primitive variables (ρ,U,p) to conservative vars (ρ,ρU,E).
-    n-dimensional version where U = tuple(u1,...,u_d)"
-function primitive_to_conservative_nd(rho,U,p)
-    rhoU = (x->rho.*x).(U)
+"""
+    function prim_to_cons(eqn::Euler{d},rho,U,p) where {d}
+
+convert primitive variables (ρ,U...,p) to conservative vars (ρ,ρU,E).
+n-dimensional version where U = tuple(u1,...,u_d)
+"""
+function prim_to_cons(eqn::Euler{d},Q) where {d}
+    rho,U,p = unpackfields(eqn,Q)
+    rhoU = map(x->rho.*x,U)
     Unorm = unorm(U)
-    E = @. p/(γ-1) + .5*rho*Unorm
-    return (rho,rhoU,E)
+    E = @. p./(eqn.γ-1) + .5*rho*Unorm
+    return SVector{d+2}(rho,rhoU...,E)
 end
 
-#####
-##### functions of conservative variables
-#####
+"""
+    function cons_to_prim_beta(rho,rhoU,E)
 
-"function pfun_nd(rho, rhoU, E)
-    pressure as a function of conservative variables (n-dimensional version).
-    n-dimensional version where U = tuple(u1,...,u_d)"
-function pfun_nd(rho, rhoU, E)
-    rhoUnorm2 = unorm(rhoU)./rho
-    return @. (γ-1)*(E - .5*rhoUnorm2)
+converts conservative variables to `primitive' variables which make evaluating EC
+fluxes cheaper.
+"""
+function cons_to_prim_beta(eqn::Euler{d},U) where {d}
+    rho,rhoU,E = unpackfields(eqn,U)
+    return SVector{d+2}(rho, map(x->x./rho,rhoU)..., betafun(eqn,U))
 end
 
-"function betafun_nd(rho,rhoU,E)
-    inverse temperature (used in entropy conservative fluxes)"
-function betafun_nd(rho,rhoU,E)
-    p = pfun_nd(rho,rhoU,E)
-    return (@. rho/(2*p))
+function pfun(eqn::Euler{d},U) where {d}
+    rho,rhoU,E = unpackfields(eqn,U)
+    rhoUnorm = unorm(rhoU)
+    return @. (eqn.γ-1)*(E-.5*rhoUnorm./rho)
 end
 
-# "function rhoe_ufun_nd(rho, rhoU, E)
-#     specific energy as a function of conservative variables"
-# function rhoe_ufun_nd(rho, rhoU, E)
-#     return pfun_nd(rho, rhoU, E) / (γ-1)
-# end
-
-"function sfun(rho, rhoU, E)
-    Specific entropy as a function of conservative variables"
-function sfun_nd(rho, rhoU, E)
-    p = pfun_nd(rho, rhoU, E)
-    return @. log(p/(rho^γ))
+function betafun(eqn::Euler{d},U) where {d}
+    rho = first(U)
+    p = pfun(eqn,U)
+    return @. rho/(2*p)
 end
 
-"function Sfun(rho,rhoU,E)
-    Mathematical entropy as a function of conservative variables"
-function Sfun_nd(rho, rhoU, E)
-    return -rho.*sfun_nd(rho, rhoU, E)*entropy_scaling
+function sfun(eqn::Euler{d},U) where {d}
+    rho = first(U)
+    p = pfun(eqn,U)
+    return @. log(p/(rho^eqn.γ))
 end
 
-"function v_ufun(rho, rhoU, E)
-    Entropy variables as functions of conservative vars"
-function v_ufun_nd(rho, rhoU, E)
-    s = sfun_nd(rho,rhoU,E)
-    p = pfun_nd(rho,rhoU,E)
+function Sfun(eqn::Euler{d},U) where {d}
+    rho = first(U)
+    return -rho.*sfun(eqn,U)
+end
 
-    v1 = (@. (γ + 1 - s) - (γ-1)*E/p)
+function v_ufun(eqn::Euler{d}, U) where {d}
+    @unpack γ = eqn
+
+    s = sfun(eqn,U)
+    p = pfun(eqn,U)
+
+    rho,rhoU,E = unpackfields(eqn,U)
+    v1 = @. (γ+1-s) - (γ-1)*E/p
     vU = (x->@. x*(γ-1)/p).(rhoU)
     vE = (x->@. x*(γ-1)/p)(-rho)
 
-    # v1,vU,vE = scale_entropy_output(v1, vU, vE)
-    return v1,vU,vE
+    return SVector(v1,vU...,vE)
 end
 
-#####
-##### functions of entropy variables
-#####
-"function s_vfun(v1,vU,vE)
-    entropy as function of entropy variables"
-function s_vfun_nd(v1,vU,vE)
+function s_vfun(eqn::Euler{d},V) where {d}
+    @unpack γ = eqn
+    v1,vU,vE = unpackfields(eqn,V)
     vUnorm = unorm(vU)
     return @. γ - v1 + vUnorm/(2*vE)
 end
 
-"function rhoe_vfun(v1,vU,vE)
-    specific energy as function of entropy variables"
-function rhoe_vfun_nd(v1,vU,vE)
-    s = s_vfun_nd(v1,vU,vE)
-    return (@. ((γ-1)/((-vE)^γ))^(1/(γ-1)) * exp(-s/(γ-1)))
+function rhoe_vfun(eqn::Euler{d},V) where {d}
+    @unpack γ = eqn
+    s = s_vfun(eqn,V)
+    v1,vU,vE = unpackfields(eqn,V)
+    return @. ((γ-1)/((-vE)^γ))^(1/(γ-1)) * exp(-s/(γ-1))
 end
 
-"function u_vfun(v1,vU,vE)
-    Conservative vars as functions of entropy variables"
-function u_vfun_nd(v1,vU,vE)
-    # v1,vU,vE = scale_entropy_input(v1,vU,vE)
-    rhoeV     = rhoe_vfun_nd(v1,vU,vE)
+function u_vfun(eqn::Euler{d},V) where {d}
+    v1,vU,vE  = unpackfields(eqn,V)
+    rhoeV     = rhoe_vfun(eqn,V)
     vUnorm    = unorm(vU)
     rho       = (@. rhoeV*(-vE))
     rhoU      = (x->rhoeV.*x).(vU)
     E         = (@. rhoeV*(1-vUnorm/(2*vE)))
-    return (rho,rhoU,E)
+    return SVector{d+2}(rho,rhoU...,E)
 end
-
-"function conservative_to_primitive_beta_nd(rho,rhoU,E)
-    converts conservative variables to `primitive' variables which make
-    evaluating EC fluxes simpler."
-function conservative_to_primitive_beta_nd(rho,rhoU,E)
-    return rho, (x->x./rho).(rhoU), betafun_nd(rho,rhoU,E)
-end
-
 
 # function dUdV_explicit(v1,vU1,vU2,vE)
 #     rho,rhou,rhov,E = u_vfun(v1,vU1,vU2,vE)
