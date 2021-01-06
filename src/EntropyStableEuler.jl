@@ -9,12 +9,10 @@ module EntropyStableEuler
 using StaticArrays
 using UnPack
 
-abstract type AbstractEqn{d} end # d = dimension
-Base.@kwdef struct Euler{d} <: AbstractEqn{d}
+export Euler
+Base.@kwdef struct Euler{d}
     γ::Float64 = 1.4 # default value of γ
 end
-
-export AbstractEqn,Euler
 
 export logmean
 include("logmean.jl")
