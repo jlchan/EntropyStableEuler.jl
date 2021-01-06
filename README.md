@@ -10,10 +10,13 @@ Entropy stable finite volume fluxes and formulas for compressible Euler and Navi
 # Usage
 
 The package exports
-- The `Euler{d}` type, which dispatches to different
-- `fS()`, which evaluates entropy conservative fluxes using
-- `u_vfun, v_ufun` to convert between conservative and entropy variables
-- `conservative_to_primitive_beta` to convert between conservative and "primitive" variables (involving inverse temperature β) used to evaluate fluxes.
+- The `Euler{d}` type, which dispatches to 1D, 2D, and 3D Euler
+- `fS(Euler{d}(),UL,UR)`, which evaluates entropy conservative fluxes in d-dimensions using conservative variables
+- `fS_prim(QL,QR)`, which evaluates entropy conservative fluxes using primitive variables. `fS_prim(QL,QR,QlogL,QlogR)` uses precomputed logs too.
+- `u_vfun(V), v_ufun(U)` to convert between conservative variables `U` and entropy variables `V`
+- `cons_to_prim_beta` to convert between conservative and "primitive" variables (involving inverse temperature β) used to evaluate fluxes.
+
+# Example 
 ```
 using EntropyStableEuler
 
