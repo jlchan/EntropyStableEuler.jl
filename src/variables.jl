@@ -4,24 +4,6 @@ function unpackfields(eqn::Euler{d},U) where {d}
     return first(U),ntuple(i->U[i+1],d),last(U)
 end
 
-# struct bar{d} end
-# foo1(a::bar{d},x) where {d} = x[1:d]
-# foo2(a::bar{d},x) where {d} = x[2:d+1]
-# foo3(a::bar{d},x) where {d} = ntuple(i -> x[i+1], d)
-#
-# @inf
-# function unpackfields(eqn::Euler{1},U)
-#     return first(U),U[2:2],last(U)
-# end
-#
-# function unpackfields(eqn::Euler{2},U) where {d}
-#     return first(U),U[2:3],last(U)
-# end
-#
-# function unpackfields(eqn::Euler{3},U) where {d}
-#     return first(U),U[2:4],last(U)
-# end
-
 """
     function prim_to_cons(eqn::Euler{d},rho,U,p) where {d}
 
@@ -106,6 +88,18 @@ function u_vfun(eqn::Euler{d},V) where {d}
     rhoU      = (x->rhoeV.*x).(vU)
     E         = (@. rhoeV*(1-vUnorm/(2*vE)))
     return SVector{d+2}(rho,rhoU...,E)
+end
+
+"""
+    wavespeed(eqn::Euler{1},U)
+
+one-dimensional wavespeed (for DG penalization terms)
+"""
+function wavespeed(eqn::Euler{1},U)
+    rho,rhou,_ = unpackfields(eqn,U)
+    p = pfun(eqn,U)
+    cvel = @. sqrt(γ*p/rho)
+    return @. abs(rhou/rho) + cvel
 end
 
 # function dUdV_explicit(v1,vU1,vU2,vE)
