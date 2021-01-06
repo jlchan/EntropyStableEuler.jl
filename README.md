@@ -13,7 +13,7 @@ The package consists mainly of three sub-modules Fluxes1D, Fluxes2D, Fluxes3D.
 Each module exports entropy conservative fluxes, as well as helper routines.
 
 For example, Fluxes2D exports
-- `euler_fluxes`, which evaluates entropy conservative fluxes
+- `euler_flux_prim`, which evaluates entropy conservative fluxes
 - `u_vfun, v_ufun` to convert between conservative and entropy variables
 - `conservative_to_primitive_beta` to convert between conservative and "primitive" variables (involving inverse temperature β) used to evaluate fluxes.
 ```
@@ -28,10 +28,10 @@ rhoL,uL,vL,betaL = conservative_to_primitive_beta(rhoL,rhouL,rhovL,EL)
 rhoR,uR,vR,betaR = conservative_to_primitive_beta(rhoR,rhouR,rhovR,ER)
 
 # evaluate fluxes
-Fx,Fy = euler_fluxes(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR)
+Fx,Fy = euler_flux_prim(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR)
 
 # can also pass in precomputed log values for efficiency
-#      euler_fluxes(rhoL,uL,vL,betaL,rhologL,betalogL,
+#      euler_flux_prim(rhoL,uL,vL,betaL,rhologL,betalogL,
 #                   rhoR,uR,vR,betaR,rhologR,betalogR)
 ```
 
