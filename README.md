@@ -17,7 +17,8 @@ The package exports
 - `cons_to_prim_beta(Euler{d}(),U)` to convert between conservative and "primitive" variables (involving inverse temperature β) used to evaluate fluxes.
 
 # Example
-```
+
+```julia
 using EntropyStableEuler
 
 # construct solution at two states
