@@ -29,7 +29,7 @@ UR = map(x->x.+.1*randn(4),(rhoL,rhouL,rhovL,EL)) # small perturbation
 Fx,Fy = fS(Euler{2}(),UL,UR)
 
 # pass in primitive vars/precomputed logs for efficiency
-QL,QR = cons_to_prim_beta.((UL,UR))
+QL,QR = cons_to_prim_beta.(Euler{2}(),(UL,UR))
 Fx,Fy = fS_prim(Euler{2}(),QL,QR)
 
 QlogL = map(x->log.(x),(first(QL),last(QL)))
