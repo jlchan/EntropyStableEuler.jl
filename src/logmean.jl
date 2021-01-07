@@ -1,6 +1,7 @@
 """
-function logmean(aL,aR)
-    Compute logarithmic mean (aL-aR)/(log(aL)-log(aR))
+    logmean(aL,aR)
+
+Logarithmic mean (aL-aR)/(log(aL)-log(aR)) for two positive states aL,aR
 """
 
 function logmean(aL,aR)
@@ -8,8 +9,10 @@ function logmean(aL,aR)
 end
 
 """
-function logmean(aL,aR,logL,logR)
-    Compute logarithmic mean given pre-computed log values logL,logR
+    logmean(aL,aR,logL,logR)
+
+Logarithmic mean (aL-aR)/(log(aL)-log(aR)) for two positive states aL,aR.
+Uses pre-computed log values logL = log(aL),logR = log(aR)
 """
 function logmean(aL,aR,logL,logR)
 

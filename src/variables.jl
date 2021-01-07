@@ -5,7 +5,7 @@ function unpackfields(eqn::Euler{d},U) where {d}
 end
 
 """
-    function prim_to_cons(eqn::Euler{d},rho,U,p) where {d}
+    prim_to_cons(eqn::Euler{d},rho,U,p) where {d}
 
 convert primitive variables (ρ,U...,p) to conservative vars (ρ,ρU,E).
 n-dimensional version where U = tuple(u1,...,u_d)
@@ -19,7 +19,7 @@ function prim_to_cons(eqn::Euler{d},Q) where {d}
 end
 
 """
-    function cons_to_prim_beta(rho,rhoU,E)
+    cons_to_prim_beta(rho,rhoU,E)
 
 converts conservative variables to `primitive' variables which make evaluating EC
 fluxes cheaper.
@@ -29,12 +29,22 @@ function cons_to_prim_beta(eqn::Euler{d},U) where {d}
     return SVector{d+2}(rho, map(x->x./rho,rhoU)..., betafun(eqn,U))
 end
 
+"""
+    pfun(eqn::Euler{d},U) where {d}
+
+Computes pressure (assuming ideal gas law) given array/tuple of conservative variables `U`
+"""
 function pfun(eqn::Euler{d},U) where {d}
     rho,rhoU,E = unpackfields(eqn,U)
     rhoUnorm = unorm(rhoU)
     return @. (eqn.γ-1)*(E-.5*rhoUnorm./rho)
 end
 
+"""
+    betafun(eqn::Euler{d},U) where {d}
+
+Converts "inverse temperature" β = ρ/(2p) given array/tuple of conservative variables `U`
+"""
 function betafun(eqn::Euler{d},U) where {d}
     rho = first(U)
     p = pfun(eqn,U)
@@ -47,11 +57,21 @@ function sfun(eqn::Euler{d},U) where {d}
     return @. log(p/(rho^eqn.γ))
 end
 
+"""
+    Sfun(eqn::Euler{d},U) where {d}
+
+Converts mathematical entropy -ρs(U) given array/tuple of conservative variables `U`
+"""
 function Sfun(eqn::Euler{d},U) where {d}
     rho = first(U)
     return -rho.*sfun(eqn,U)
 end
 
+"""
+    v_ufun(eqn::Euler{d}, U) where {d}
+
+Returns entropy variables given tuple/array of conservative variables `U`.
+"""
 function v_ufun(eqn::Euler{d}, U) where {d}
     @unpack γ = eqn
 
@@ -80,6 +100,11 @@ function rhoe_vfun(eqn::Euler{d},V) where {d}
     return @. ((γ-1)/((-vE)^γ))^(1/(γ-1)) * exp(-s/(γ-1))
 end
 
+"""
+    u_vfun(eqn::Euler{d},V) where {d}
+
+Returns conservative variables given tuple/array of entropy variables `V`.
+"""
 function u_vfun(eqn::Euler{d},V) where {d}
     v1,vU,vE  = unpackfields(eqn,V)
     rhoeV     = rhoe_vfun(eqn,V)
@@ -93,7 +118,7 @@ end
 """
     wavespeed(eqn::Euler{1},U)
 
-one-dimensional wavespeed (for DG penalization terms)
+Returns 1D wavespeed (used for flux penalization terms) given conservative variables U
 """
 function wavespeed(eqn::Euler{1},U)
     rho,rhou,_ = unpackfields(eqn,U)
