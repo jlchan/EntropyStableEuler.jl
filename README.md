@@ -23,7 +23,7 @@ using EntropyStableEuler
 
 # construct solution at two states
 UL = map(x->x.*ones(4),(1,.1,.2,2))
-UR = map(x->x.+.1*randn(4),(rhoL,rhouL,rhovL,EL)) # small perturbation
+UR = map(x->x.*ones(4),(1.1,.2,.3,2.5))
 
 # evaluate fluxes
 Fx,Fy = fS(Euler{2}(),UL,UR)
