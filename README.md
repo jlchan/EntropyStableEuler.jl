@@ -11,32 +11,35 @@ Code based off of formulas in [Chandrashekar 2012](https://doi.org/10.4208/cicp.
 
 # Usage
 
-The package consists mainly of three sub-modules Fluxes1D, Fluxes2D, Fluxes3D.
-Each module exports entropy conservative fluxes, as well as helper routines.
+The package exports
+- The `Euler{d}` type, which is used to dispatch on 1D, 2D, and 3D formulas.
+- `fS(Euler{d}(),UL,UR)`, which evaluates d-dimensional EC fluxes using conservative variables.
+- `fS_prim(Euler{d}(),QL,QR)`, which evaluates entropy conservative fluxes using primitive variables. `fS_prim(Euler{d}(),QL,QR,QlogL,QlogR)` uses precomputed logs too.
+- `u_vfun(Euler{d}(),V), v_ufun(Euler{d}(),U)` to convert between conservative variables `U` and entropy variables `V`
+- `cons_to_prim_beta(Euler{d}(),U)` to convert between conservative and "primitive" variables (involving inverse temperature β) used to evaluate fluxes.
 
-For example, Fluxes2D exports
-- `euler_fluxes`, which evaluates entropy conservative fluxes
-- `u_vfun, v_ufun` to convert between conservative and entropy variables
-- `conservative_to_primitive_beta` to convert between conservative and "primitive" variables (involving inverse temperature β) used to evaluate fluxes.
-```
-using EntropyStableEuler.Fluxes2D
+# Example
+
+```julia
+using EntropyStableEuler
 
 # construct solution at two states
-rhoL,rhouL,rhovL,EL = map(x->x.*ones(4),(1,.1,.2,2))
-rhoR,rhouR,rhovR,ER = map(x->x.+.1*randn(4),(rhoL,rhouL,rhovL,EL)) # small perturbation
-
-# convert to "primitive" variables for efficient flux evaluation
-rhoL,uL,vL,betaL = conservative_to_primitive_beta(rhoL,rhouL,rhovL,EL)
-rhoR,uR,vR,betaR = conservative_to_primitive_beta(rhoR,rhouR,rhovR,ER)
+UL = map(x->x.*ones(4),(1,.1,.2,2))
+UR = map(x->x.*ones(4),(1.1,.2,.3,2.5))
 
 # evaluate fluxes
-Fx,Fy = euler_fluxes(rhoL,uL,vL,betaL,rhoR,uR,vR,betaR)
+Fx,Fy = fS(Euler{2}(),UL,UR)
 
-# can also pass in precomputed log values for efficiency
-#      euler_fluxes(rhoL,uL,vL,betaL,rhologL,betalogL,
-#                   rhoR,uR,vR,betaR,rhologR,betalogR)
+# pass in primitive vars/precomputed logs for efficiency
+QL,QR = cons_to_prim_beta.(Euler{2}(),(UL,UR))
+Fx,Fy = fS_prim(Euler{2}(),QL,QR)
+
+QlogL = map(x->log.(x),(first(QL),last(QL)))
+QlogR = map(x->log.(x),(first(QR),last(QR)))
+Fx,Fy = fS_prim(Euler{2}(),QL,QR,QlogL,QlogR)
 ```
 
 # To-do
 - add Lax-Friedrichs penalty and matrix dissipation from [Winters et al. 2017](https://doi.org/10.1016/j.jcp.2016.12.006)
-- add Jacobians for transforms between conservative and entropy variables
+- Jacobians for transforms between conservative and entropy variables
+- viscous entropy variable matrices for compressible Navier-Stokes
