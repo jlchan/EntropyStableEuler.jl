@@ -1,11 +1,10 @@
 # EntropyStableEuler
 
-[![Build Status](https://travis-ci.com/jlchan/EntropyStableEuler.jl.svg?branch=master)](https://travis-ci.com/jlchan/EntropyStableEuler.jl)
 [![Build Status](https://ci.appveyor.com/api/projects/status/github/jlchan/EntropyStableEuler.jl?svg=true)](https://ci.appveyor.com/project/jlchan/EntropyStableEuler-jl)
 [![Build status](https://github.com/jlchan/EntropyStableEuler.jl/workflows/CI/badge.svg)](https://github.com/jlchan/EntropyStableEuler.jl/actions)
 [![Codecov](https://codecov.io/gh/jlchan/EntropyStableEuler.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/jlchan/EntropyStableEuler.jl)
 
-Provides entropy stable finite volume fluxes for the compressible Euler equations, as well as formulas for transformations between conservative and entropy variables. 
+Provides entropy stable finite volume fluxes for the compressible Euler equations, as well as formulas for transformations between conservative and entropy variables.
 
 Code based off of formulas in [Chandrashekar 2012](https://doi.org/10.4208/cicp.170712.010313a) and [Winters et al. 2019](https://link.springer.com/article/10.1007/s10543-019-00789-w). Formulas for entropy variables are from [Hughes, Mallet, Franca 1986](https://doi.org/10.1016/0045-7825(86)90127-1) and from [Parsani, Carpenter, Nielsen 2015](https://doi.org/10.1016/j.jcp.2015.03.026)
 
