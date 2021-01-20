@@ -30,6 +30,19 @@ function cons_to_prim_beta(eqn::Euler{d},U) where {d}
 end
 
 """
+    cons_to_prim_betalog(eqn::Euler{d},U) where {d}
+
+converts conservative variables to `primitive' variables which make evaluating EC
+fluxes cheaper. Outputs Q,Qlog, where Qlog = log.(rho), log.(beta)
+"""
+function cons_to_prim_betalog(eqn::Euler{d},U) where {d}
+    rho,rhoU,E = unpackfields(eqn,U)
+    beta = betafun(eqn,U)
+    return SVector{d+2}(rho, map(x->x./rho,rhoU)..., beta),
+           SVector{2}(log.(rho), log.(beta))
+end
+
+"""
     pfun(eqn::Euler{d},U) where {d}
 
 Computes pressure (assuming ideal gas law) given array/tuple of conservative variables `U`
