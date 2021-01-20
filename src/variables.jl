@@ -19,7 +19,7 @@ function prim_to_cons(eqn::Euler{d},Q) where {d}
 end
 
 """
-    cons_to_prim_beta(rho,rhoU,E)
+    cons_to_prim_beta(eqn::Euler{d},U) where {d}
 
 converts conservative variables to `primitive' variables which make evaluating EC
 fluxes cheaper.
