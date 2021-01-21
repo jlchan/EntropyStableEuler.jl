@@ -11,8 +11,7 @@ end
 export logmean
 include("logmean.jl")
 
-export betafun, pfun, prim_to_cons
-export cons_to_prim_beta, cons_to_prim_betalog
+export betafun, pfun, prim_to_cons, cons_to_prim_beta
 export Sfun, u_vfun, v_ufun
 include("variables.jl")
 
