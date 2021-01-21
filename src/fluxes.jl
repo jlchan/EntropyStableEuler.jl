@@ -12,16 +12,33 @@ end
 
 """
     fS_prim(eqn::Euler{d},UL,UR)
-    #fS_prim(eqn::Euler{d},UL,UR,rhologL,betalogL,rhologR,betalogR)
 
 Entropy conservative fluxes for the compressible Euler equations, where
 UL,UR are tuples of left and right solutions in terms of β-primitive variables
 Q = (rho,uvw...,β) (where uvw = velocity components and β is inverse temperature).
 """
 function fS_prim(eqn::Euler{d},UL,UR) where {d}
-    UlogL = map(x->log.(x),(first(UL),last(UL)))
-    UlogR = map(x->log.(x),(first(UR),last(UR)))
-    return fS_prim_log(eqn,(UL...,UlogL...),(UR...,UlogR...))
+    logL = map(x->log.(x),(first(UL),last(UL)))
+    logR = map(x->log.(x),(first(UR),last(UR)))
+
+    return fS_prim_log(eqn,(UL...,logL...),(UR...,logR...))
+end
+
+# manually unroll for d = 1,2,3 to avoid type instability
+function fS_prim(eqn::Euler{1},UL,UR)
+    UlogL = (UL[1],UL[2],UL[3],log.(UL[1]),log.(UL[3]))
+    UlogR = (UR[1],UR[2],UR[3],log.(UR[1]),log.(UR[3]))
+    return fS_prim_log(eqn,UlogL,UlogR)
+end
+function fS_prim(eqn::Euler{2},UL,UR)
+    UlogL = (UL[1],UL[2],UL[3],UL[4],log.(UL[1]),log.(UL[4]))
+    UlogR = (UR[1],UR[2],UR[3],UR[4],log.(UR[1]),log.(UR[4]))
+    return fS_prim_log(eqn,UlogL,UlogR)
+end
+function fS_prim(eqn::Euler{3},UL,UR)
+    UlogL = (UL[1],UL[2],UL[3],UL[4],UL[5],log.(UL[1]),log.(UL[5]))
+    UlogR = (UR[1],UR[2],UR[3],UR[4],UR[5],log.(UR[1]),log.(UR[5]))
+    return fS_prim_log(eqn,UlogL,UlogR)
 end
 
 """
@@ -137,3 +154,11 @@ function fS_prim_log(eqn::Euler{3},UL,UR)
     Fz = SVector(FzS1,FzS2,FzS3,FzS4,FzS5)
     return Fx,Fy,Fz
 end
+
+### didn't add coordinates b/c timing doesn't seem to make a diff.
+# julia> Qlog = (1.0, 0.1, 0.2, 2.5250000000000004, 0.0, 0.9262410627273233)
+# julia> @btime fS_prim_log($Euler{2}(),$Qlog,$Qlog);
+#   2.963 μs (0 allocations: 0 bytes)
+#
+# julia> @btime fS_prim_log($Euler{2}(),$Qlog,$Qlog,$1);
+#   3.044 μs (0 allocations: 0 bytes)
