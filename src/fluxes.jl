@@ -7,31 +7,36 @@ tuples of left and right solutions in terms of the conservative variables.
 function fS(eqn::Euler{d},UL,UR) where {d}
     QL = cons_to_prim_beta(eqn,UL)
     QR = cons_to_prim_beta(eqn,UR)
-    QlogL = map(x->log.(x),(first(QL),last(QL)))
-    QlogR = map(x->log.(x),(first(QR),last(QR)))
-    return fS_prim(eqn,QL,QR,QlogL...,QlogR...)
+    return fS_prim(eqn,QL,QR)
 end
 
 """
     fS_prim(eqn::Euler{d},UL,UR)
-    fS_prim(eqn::Euler{d},UL,UR,rhologL,betalogL,rhologR,betalogR)
+    #fS_prim(eqn::Euler{d},UL,UR,rhologL,betalogL,rhologR,betalogR)
 
 Entropy conservative fluxes for the compressible Euler equations, where
-UL,UR are tuples of left and right solutions in terms of primitive variables
+UL,UR are tuples of left and right solutions in terms of β-primitive variables
 (rho,uvw...,β) (where uvw = velocity components and β is inverse temperature).
 """
 function fS_prim(eqn::Euler{d},UL,UR) where {d}
     UlogL = map(x->log.(x),(first(UL),last(UL)))
     UlogR = map(x->log.(x),(first(UR),last(UR)))
-    return fS_prim(eqn,UL,UR,UlogL...,UlogR...)
+    return fS_prim_log(eqn,(UL...,UlogL...),(UR...,UlogR...))
 end
 
-function fS_prim(eqn::Euler{1},UL,UR,rhologL,betalogL,rhologR,betalogR)
+"""
+    fS_prim_log(eqn::Euler{d},UL,UR)
+
+Entropy conservative fluxes for the compressible Euler equations, where
+UL,UR are tuples of left and right solutions (in β-primitive variables) and logs
+of rho, β, e.g., U = (rho,uvw...,β,log.(rho),log.(β)).
+"""
+function fS_prim_log(eqn::Euler{1},UL,UR)
 
     @unpack γ = eqn
 
-    rhoL,uL,betaL = UL
-    rhoR,uR,betaR = UR
+    rhoL,uL,betaL,rhologL,betalogL = UL
+    rhoR,uR,betaR,rhologR,betalogR = UR
     # rhologL,betalogL = UlogL
     # rhologR,betalogR = UlogR
 
@@ -53,12 +58,12 @@ function fS_prim(eqn::Euler{1},UL,UR,rhologL,betalogL,rhologR,betalogR)
     return SVector(FxS1,FxS2,FxS3)
 end
 
-function fS_prim(eqn::Euler{2},UL,UR,rhologL,betalogL,rhologR,betalogR)
+function fS_prim_log(eqn::Euler{2},UL,UR)
 
     @unpack γ = eqn
 
-    rhoL,uL,vL,betaL = UL
-    rhoR,uR,vR,betaR = UR
+    rhoL,uL,vL,betaL,rhologL,betalogL = UL
+    rhoR,uR,vR,betaR,rhologR,betalogR = UR
     # rhologL,betalogL = UlogL
     # rhologR,betalogR = UlogR
 
@@ -87,12 +92,12 @@ function fS_prim(eqn::Euler{2},UL,UR,rhologL,betalogL,rhologR,betalogR)
     return SVector(FxS1,FxS2,FxS3,FxS4),SVector(FyS1,FyS2,FyS3,FyS4)
 end
 
-function fS_prim(eqn::Euler{3},UL,UR,rhologL,betalogL,rhologR,betalogR)
+function fS_prim_log(eqn::Euler{3},UL,UR)
 
     @unpack γ = eqn
 
-    rhoL,uL,vL,wL,betaL = UL
-    rhoR,uR,vR,wR,betaR = UR
+    rhoL,uL,vL,wL,betaL,rhologL,betalogL = UL
+    rhoR,uR,vR,wR,betaR,rhologR,betalogR = UR
     # rhologL,betalogL = UlogL
     # rhologR,betalogR = UlogR
 

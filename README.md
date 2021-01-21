@@ -13,7 +13,8 @@ Code based off of formulas in [Chandrashekar 2012](https://doi.org/10.4208/cicp.
 The package exports
 - The `Euler{d}` type, which is used to dispatch on 1D, 2D, and 3D formulas.
 - `fS(Euler{d}(),UL,UR)`, which evaluates d-dimensional EC fluxes using conservative variables.
-- `fS_prim(Euler{d}(),QL,QR)`, which evaluates entropy conservative fluxes using primitive variables. `fS_prim(Euler{d}(),QL,QR,QlogL,QlogR)` uses precomputed logs too.
+- `fS_prim(Euler{d}(),QL,QR)`, which evaluates entropy conservative fluxes using primitive variables `Q = (ρ,uvw...,β)`.
+- `fS_prim_log(Euler{d}(),QL,QR)`, which takes advantage of precomputed logarithms. Solutions are assumed to be of the form `Q = (ρ,uvw...,β,log(ρ),log(β))`.
 - `u_vfun(Euler{d}(),V), v_ufun(Euler{d}(),U)` to convert between conservative variables `U` and entropy variables `V`
 - `cons_to_prim_beta(Euler{d}(),U)` to convert between conservative and "primitive" variables (involving inverse temperature β) used to evaluate fluxes.
 
