@@ -15,7 +15,7 @@ export betafun, pfun, prim_to_cons, cons_to_prim_beta
 export Sfun, u_vfun, v_ufun
 include("variables.jl")
 
-export fS, fS_prim
+export fS, fS_prim, fS_prim_log
 include("fluxes.jl")
 
 end
