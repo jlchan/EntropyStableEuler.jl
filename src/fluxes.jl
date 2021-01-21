@@ -2,7 +2,7 @@
     fS(eqn::Euler{d},UL,UR) where {d}
 
 Entropy conservative fluxes for the compressible Euler equations, where UL,UR are
-tuples of left and right solutions in terms of the conservative variables.
+tuples of left and right states in terms of the conservative variables Q = (ρ,ρuvw...,E)
 """
 function fS(eqn::Euler{d},UL,UR) where {d}
     QL = cons_to_prim_beta(eqn,UL)
@@ -16,7 +16,7 @@ end
 
 Entropy conservative fluxes for the compressible Euler equations, where
 UL,UR are tuples of left and right solutions in terms of β-primitive variables
-(rho,uvw...,β) (where uvw = velocity components and β is inverse temperature).
+Q = (rho,uvw...,β) (where uvw = velocity components and β is inverse temperature).
 """
 function fS_prim(eqn::Euler{d},UL,UR) where {d}
     UlogL = map(x->log.(x),(first(UL),last(UL)))
