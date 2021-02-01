@@ -4,7 +4,7 @@
 Logarithmic mean (aL-aR)/(log(aL)-log(aR)) for two positive states aL,aR
 """
 
-function logmean(aL,aR)
+@inline function logmean(aL,aR)
     return logmean(aL,aR,log(aL),log(aR))
 end
 
@@ -14,7 +14,7 @@ end
 Logarithmic mean (aL-aR)/(log(aL)-log(aR)) for two positive states aL,aR.
 Uses pre-computed log values logL = log(aL),logR = log(aR)
 """
-function logmean(aL,aR,logL,logR)
+@inline function logmean(aL,aR,logL,logR)
 
     # From "Entropy stable num. approx. for the isothermal and polytropic Euler"
     # by Winters et al 2019.
