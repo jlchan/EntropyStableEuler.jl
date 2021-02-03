@@ -1,4 +1,4 @@
-unorm(U) = sum(map((x->x.^2),U))
+@inline unorm(U) = sum(map((x->x.^2),U))
 
 @inline function unpackfields(eqn::Euler{d},U) where {d}
     return first(U),ntuple(i->U[i+1],d),last(U)
