@@ -1,6 +1,6 @@
 unorm(U) = sum(map((x->x.^2),U))
 
-function unpackfields(eqn::Euler{d},U) where {d}
+@inline function unpackfields(eqn::Euler{d},U) where {d}
     return first(U),ntuple(i->U[i+1],d),last(U)
 end
 
@@ -24,7 +24,7 @@ end
 converts conservative variables to `primitive' variables which make evaluating EC
 fluxes cheaper.
 """
-function cons_to_prim_beta(eqn::Euler{d},U) where {d}
+@inline function cons_to_prim_beta(eqn::Euler{d},U) where {d}
     rho,rhoU,E = unpackfields(eqn,U)
     return SVector{d+2}(rho, map(x->x./rho,rhoU)..., betafun(eqn,U))
 end
@@ -34,7 +34,7 @@ end
 
 Computes pressure (assuming ideal gas law) given array/tuple of conservative variables `U`
 """
-function pfun(eqn::Euler{d},U) where {d}
+@inline function pfun(eqn::Euler{d},U) where {d}
     rho,rhoU,E = unpackfields(eqn,U)
     rhoUnorm = unorm(rhoU)
     return @. (eqn.γ-1)*(E-.5*rhoUnorm./rho)
@@ -45,7 +45,7 @@ end
 
 Converts "inverse temperature" β = ρ/(2p) given array/tuple of conservative variables `U`
 """
-function betafun(eqn::Euler{d},U) where {d}
+@inline function betafun(eqn::Euler{d},U) where {d}
     rho = first(U)
     p = pfun(eqn,U)
     return @. rho/(2*p)
