@@ -123,7 +123,7 @@ Returns 1D wavespeed (used for flux penalization terms) given conservative varia
 function wavespeed(eqn::Euler{1},U)
     rho,rhou,_ = unpackfields(eqn,U)
     p = pfun(eqn,U)
-    cvel = @. sqrt(γ*p/rho)
+    cvel = @. sqrt(eqn.γ*p/rho)
     return @. abs(rhou/rho) + cvel
 end
 
