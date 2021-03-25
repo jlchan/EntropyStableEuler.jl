@@ -1,6 +1,5 @@
 # EntropyStableEuler
 
-[![Build Status](https://ci.appveyor.com/api/projects/status/github/jlchan/EntropyStableEuler.jl?svg=true)](https://ci.appveyor.com/project/jlchan/EntropyStableEuler-jl)
 [![Build status](https://github.com/jlchan/EntropyStableEuler.jl/workflows/CI/badge.svg)](https://github.com/jlchan/EntropyStableEuler.jl/actions)
 [![Codecov](https://codecov.io/gh/jlchan/EntropyStableEuler.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/jlchan/EntropyStableEuler.jl)
 
