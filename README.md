@@ -36,7 +36,7 @@ Fx,Fy = fS_prim(Euler{2}(),QL,QR)
 
 QlogL = map(x->log.(x),(first(QL),last(QL)))
 QlogR = map(x->log.(x),(first(QR),last(QR)))
-Fx,Fy = fS_prim(Euler{2}(),QL,QR,QlogL,QlogR)
+Fx,Fy = fS_prim_log(Euler{2}(),QL,QR,QlogL,QlogR)
 ```
 
 # To-do
