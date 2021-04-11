@@ -14,7 +14,7 @@ function prim_to_cons(eqn::Euler{d},Q) where {d}
     rho,U,p = unpackfields(eqn,Q)
     rhoU = map(x->rho.*x,U)
     Unorm = unorm(U)
-    E = @. p./(eqn.γ-1) + .5*rho*Unorm
+    E = @. p /(eqn.γ-1) + .5*rho*Unorm
     return SVector{d+2}(rho,rhoU...,E)
 end
 
@@ -37,7 +37,7 @@ Computes pressure (assuming ideal gas law) given array/tuple of conservative var
 @inline function pfun(eqn::Euler{d},U) where {d}
     rho,rhoU,E = unpackfields(eqn,U)
     rhoUnorm = unorm(rhoU)
-    return @. (eqn.γ-1)*(E-.5*rhoUnorm./rho)
+    return @. (eqn.γ - 1)*(E - .5*rhoUnorm / rho)
 end
 
 """
