@@ -33,8 +33,8 @@ Fx,Fy = fS(Euler{2}(),UL,UR)
 QL,QR = cons_to_prim_beta.(Euler{2}(),(UL,UR))
 Fx,Fy = fS_prim(Euler{2}(),QL,QR)
 
-QlogL = map(x->log.(x),(first(QL),last(QL)))
-QlogR = map(x->log.(x),(first(QR),last(QR)))
+QlogL = map(x->log(x),(first(QL),last(QL)))
+QlogR = map(x->log(x),(first(QR),last(QR)))
 Fx,Fy = fS_prim_log(Euler{2}(),QL,QR,QlogL,QlogR)
 ```
 

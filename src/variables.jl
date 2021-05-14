@@ -1,4 +1,4 @@
-@inline unorm(U) = sum(map((x->x.^2),U))
+@inline vector_norm(U) = sum(map(x->x^2,U))
 
 @inline function unpackfields(eqn::Euler{d},U) where {d}
     return first(U),ntuple(i->U[i+1],d),last(U)
@@ -12,9 +12,9 @@ n-dimensional version where U = tuple(u1,...,u_d)
 """
 function prim_to_cons(eqn::Euler{d},Q) where {d}
     rho,U,p = unpackfields(eqn,Q)
-    rhoU = map(x->rho.*x,U)
-    Unorm = unorm(U)
-    E = @. p /(eqn.γ-1) + .5*rho*Unorm
+    rhoU = map(x->rho*x,U)
+    Unorm = vector_norm(U)
+    E =  p /(eqn.γ-1) + .5*rho*Unorm
     return SVector{d+2}(rho,rhoU...,E)
 end
 
@@ -25,8 +25,8 @@ converts conservative variables to `primitive' variables which make evaluating E
 fluxes cheaper.
 """
 @inline function cons_to_prim_beta(eqn::Euler{d},U) where {d}
-    rho,rhoU,E = unpackfields(eqn,U)
-    return SVector{d+2}(rho, map(x->x./rho,rhoU)..., betafun(eqn,U))
+    rho,rhoU,_ = unpackfields(eqn,U)
+    return SVector{d+2}(rho, map(x->x/rho,rhoU)..., betafun(eqn,U))
 end
 
 """
@@ -36,8 +36,8 @@ Computes pressure (assuming ideal gas law) given array/tuple of conservative var
 """
 @inline function pfun(eqn::Euler{d},U) where {d}
     rho,rhoU,E = unpackfields(eqn,U)
-    rhoUnorm = unorm(rhoU)
-    return @. (eqn.γ - 1)*(E - .5*rhoUnorm / rho)
+    rhoUnorm = vector_norm(rhoU)
+    return  (eqn.γ - 1)*(E - .5*rhoUnorm / rho)
 end
 
 """
@@ -48,13 +48,13 @@ Converts "inverse temperature" β = ρ/(2p) given array/tuple of conservative va
 @inline function betafun(eqn::Euler{d},U) where {d}
     rho = first(U)
     p = pfun(eqn,U)
-    return @. rho/(2*p)
+    return  rho/(2*p)
 end
 
 function sfun(eqn::Euler{d},U) where {d}
     rho = first(U)
     p = pfun(eqn,U)
-    return @. log(p/(rho^eqn.γ))
+    return  log(p/(rho^eqn.γ))
 end
 
 """
@@ -64,7 +64,7 @@ Converts mathematical entropy -ρs(U) given array/tuple of conservative variable
 """
 function Sfun(eqn::Euler{d},U) where {d}
     rho = first(U)
-    return -rho.*sfun(eqn,U)
+    return -rho*sfun(eqn,U)
 end
 
 """
@@ -79,9 +79,9 @@ function v_ufun(eqn::Euler{d}, U) where {d}
     p = pfun(eqn,U)
 
     rho,rhoU,E = unpackfields(eqn,U)
-    v1 = @. (γ+1-s) - (γ-1)*E/p
-    vU = (x->@. x*(γ-1)/p).(rhoU)
-    vE = (x->@. x*(γ-1)/p)(-rho)
+    v1 =  (γ+1-s) - (γ-1)*E/p
+    vU = map(x-> x*(γ-1)/p,rhoU)
+    vE = -rho*(γ-1)/p
 
     return SVector(v1,vU...,vE)
 end
@@ -89,15 +89,15 @@ end
 function s_vfun(eqn::Euler{d},V) where {d}
     @unpack γ = eqn
     v1,vU,vE = unpackfields(eqn,V)
-    vUnorm = unorm(vU)
-    return @. γ - v1 + vUnorm/(2*vE)
+    vUnorm = vector_norm(vU)
+    return  γ - v1 + vUnorm/(2*vE)
 end
 
 function rhoe_vfun(eqn::Euler{d},V) where {d}
     @unpack γ = eqn
     s = s_vfun(eqn,V)
-    v1,vU,vE = unpackfields(eqn,V)
-    return @. ((γ-1)/((-vE)^γ))^(1/(γ-1)) * exp(-s/(γ-1))
+    vE = last(V)
+    return  ((γ-1)/((-vE)^γ))^(1/(γ-1)) * exp(-s/(γ-1))
 end
 
 """
@@ -108,10 +108,10 @@ Returns conservative variables given tuple/array of entropy variables `V`.
 function u_vfun(eqn::Euler{d},V) where {d}
     v1,vU,vE  = unpackfields(eqn,V)
     rhoeV     = rhoe_vfun(eqn,V)
-    vUnorm    = unorm(vU)
-    rho       = (@. rhoeV*(-vE))
-    rhoU      = (x->rhoeV.*x).(vU)
-    E         = (@. rhoeV*(1-vUnorm/(2*vE)))
+    vUnorm    = vector_norm(vU)
+    rho       = ( rhoeV*(-vE))
+    rhoU      = map(x->rhoeV*x,vU)
+    E         = ( rhoeV*(1-vUnorm/(2*vE)))
     return SVector{d+2}(rho,rhoU...,E)
 end
 
@@ -123,8 +123,8 @@ Returns 1D wavespeed (used for flux penalization terms) given conservative varia
 function wavespeed(eqn::Euler{1},U)
     rho,rhou,_ = unpackfields(eqn,U)
     p = pfun(eqn,U)
-    cvel = @. sqrt(eqn.γ*p/rho)
-    return @. abs(rhou/rho) + cvel
+    cvel =  sqrt(eqn.γ*p/rho)
+    return  abs(rhou/rho) + cvel
 end
 
 # function dUdV_explicit(v1,vU1,vU2,vE)
