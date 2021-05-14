@@ -37,7 +37,8 @@ fluxes cheaper, while also computing log(rho),log(beta)
 """
 @inline function cons_to_prim_beta_log(eqn::Euler{d},U) where {d}
     rho,rhoU,_ = unpackfields(eqn,U)
-    return SVector{d+4}(rho, map(x->x/rho,rhoU)..., betafun(eqn,U), log(rho),log(beta))
+    beta = betafun(eqn,U)
+    return SVector{d+4}(rho, map(x->x/rho,rhoU)..., beta, log(rho),log(beta))
 end
 
 """
