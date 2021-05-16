@@ -5,10 +5,9 @@
 end
 
 """
-    prim_to_cons(eqn::Euler{d},rho,U,p) where {d}
+    function prim_to_cons(eqn::Euler{d},Q) where {d}
 
-convert primitive variables (ρ,U...,p) to conservative vars (ρ,ρU,E).
-n-dimensional version where U = tuple(u1,...,u_d)
+convert primitive variables Q = (ρ,U...,p) to conservative vars (ρ,ρU...,E).
 """
 function prim_to_cons(eqn::Euler{d},Q) where {d}
     rho,U,p = unpackfields(eqn,Q)
