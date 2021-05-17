@@ -79,11 +79,11 @@ function Sfun(eqn::Euler{d},U) where {d}
 end
 
 """
-    v_ufun(eqn::Euler{d}, U) where {d}
+    cons_to_entropy(eqn::Euler{d}, U) where {d}
 
 Returns entropy variables given tuple/array of conservative variables `U`.
 """
-function v_ufun(eqn::Euler{d}, U) where {d}
+function cons_to_entropy(eqn::Euler{d}, U) where {d}
     @unpack γ = eqn
 
     s = sfun(eqn,U)
@@ -112,11 +112,11 @@ function rhoe_vfun(eqn::Euler{d},V) where {d}
 end
 
 """
-    u_vfun(eqn::Euler{d},V) where {d}
+    entropy_to_cons(eqn::Euler{d},V) where {d}
 
 Returns conservative variables given tuple/array of entropy variables `V`.
 """
-function u_vfun(eqn::Euler{d},V) where {d}
+function entropy_to_cons(eqn::Euler{d},V) where {d}
     v1,vU,vE  = unpackfields(eqn,V)
     rhoeV     = rhoe_vfun(eqn,V)
     vUnorm    = vector_norm(vU)
@@ -139,7 +139,7 @@ function wavespeed(eqn::Euler{1},U)
 end
 
 # function dUdV_explicit(v1,vU1,vU2,vE)
-#     rho,rhou,rhov,E = u_vfun(v1,vU1,vU2,vE)
+#     rho,rhou,rhov,E = entropy_to_cons(v1,vU1,vU2,vE)
 #     u,v = (x->x./rho).((rhou,rhov))
 #     p = pfun(rho,rhou,rhov,E)
 #     a2 = γ*p/rho
@@ -155,7 +155,7 @@ end
 #
 # function dVdU_explicit(rho,rhou,rhov,E)
 #     rhoe = rhoe_ufun(rho,rhou,rhov,E)
-#     V = v_ufun(rho,rhou,rhov,E)
+#     V = cons_to_entropy(rho,rhou,rhov,E)
 #     k = .5*(V[2]^2+V[3]^2)/V[4]
 #
 #     dVdU = @SMatrix [γ+k^2      k*V[2]          k*V[3]         V[4]*(k+1);

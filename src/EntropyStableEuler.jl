@@ -12,7 +12,7 @@ export logmean
 include("logmean.jl")
 
 export betafun, pfun, prim_to_cons, cons_to_prim_beta, cons_to_prim_beta_log
-export Sfun, u_vfun, v_ufun
+export Sfun, cons_to_entropy, entropy_to_cons
 include("variables.jl")
 
 export fS, fS_prim, fS_prim_log
