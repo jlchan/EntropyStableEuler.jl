@@ -8,6 +8,9 @@ Base.@kwdef struct Euler{d}
     γ::Float64 = 1.4 # default value of γ
 end
 
+export nfields
+nfields(Euler{d}) = d+2
+
 export logmean
 include("logmean.jl")
 
