@@ -134,13 +134,13 @@ Returns 1D wavespeed (used for flux penalization terms) given conservative varia
 
 When given two arguments, returns Davis wavespeed estimate e.g., max(cL,cR).
 """
-function wavespeed(eqn::Euler{1},U)
+@inline function wavespeed(eqn::Euler{1},U)
     rho,rhou,_ = unpackfields(eqn,U)
     p = pfun(eqn,U)
     cvel =  sqrt(eqn.γ*p/rho)
     return  abs(only(rhou) / rho) + cvel
 end
-wavespeed(eqn::Euler{1},UL,UR) = max(wavespeed(eqn,UL),wavespeed(eqn,UR))
+@inline wavespeed(eqn::Euler{1},UL,UR) = max(wavespeed(eqn,UL),wavespeed(eqn,UR))
 
 
 # function dUdV_explicit(v1,vU1,vU2,vE)
