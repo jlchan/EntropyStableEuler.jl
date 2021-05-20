@@ -19,6 +19,7 @@ export Sfun, cons_to_entropy, entropy_to_cons
 include("variables.jl")
 
 export fS, fS_prim, fS_prim_log
+export normal_wavespeed, LxF_dissipation
 include("fluxes.jl")
 
 end

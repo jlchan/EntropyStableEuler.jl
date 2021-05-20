@@ -2,6 +2,8 @@ using EntropyStableEuler
 using Test
 using StaticArrays
 
+norm(u) = sqrt(sum(u.^2))
+
 @testset "Logmean tests" begin
     uL,uR = 1,2
     @test logmean(uL,uR) == logmean(uL,uR,log(uL),log(uR))
@@ -96,6 +98,22 @@ end
                 @test vTF(VL,VR,F[j]) ≈ ψ(UL)[j]-ψ(UR)[j]
             end
         end
+    end
+
+    @testset "Dissipation" begin
+        UL = prim_to_cons(Euler{d}(),init_prim(d))
+        UR = prim_to_cons(Euler{d}(),init_prim(d).*1.1)
+        VL = cons_to_entropy(Euler{d}(),UL)
+        VR = cons_to_entropy(Euler{d}(),UR)
+
+        normal = randn(d)
+        normal = normal/norm(normal)
+        dissipation = LxF_dissipation(Euler{d}(),normal,UL,UL)
+        @test norm(dissipation) < 50*eps()
+
+        dissipation = LxF_dissipation(Euler{d}(),normal,UL,UR)
+        vTF(VL,VR,F) = sum((VL .- VR).*F)
+        @test vTF(VL,VR,dissipation) > 0.0
     end
 
     @testset "Type stability tests" begin

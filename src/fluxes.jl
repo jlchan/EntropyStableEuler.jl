@@ -151,10 +151,39 @@ end
     return Fx,Fy,Fz
 end
 
-### didn't add coordinates b/c timing doesn't seem to make a diff.
-# julia> Qlog = (1.0, 0.1, 0.2, 2.5250000000000004, 0.0, 0.9262410627273233)
-# julia> @btime fS_prim_log($Euler{2}(),$Qlog,$Qlog);
-#   2.963 μs (0 allocations: 0 bytes)
-#
-# julia> @btime fS_prim_log($Euler{2}(),$Qlog,$Qlog,$1);
-#   3.044 μs (0 allocations: 0 bytes)
+"""
+    function normal_wavespeed(equations::Euler{2}, normal, UL, UR)
+
+1D wavespeed in the direction of `normal`.
+"""
+@inline function normal_wavespeed(equations::Euler{2}, normal, UL, UR)
+    # Calculate primitive variables and speed of sound
+    ρu_n_L = UL[2]*normal[1] + UL[3]*normal[2]
+    ρu_n_R = UR[2]*normal[1] + UR[3]*normal[2]
+    uL = (UL[1],ρu_n_L,UL[4])
+    uR = (UR[1],ρu_n_R,UR[4])
+    return EntropyStableEuler.wavespeed(Euler{1}(equations.γ),uL,uR)
+end
+@inline function normal_wavespeed(equations::Euler{3}, normal, UL, UR)
+    # Calculate primitive variables and speed of sound
+    ρu_n_L = UL[2]*normal[1] + UL[3]*normal[2] + UL[4]*normal[3]
+    ρu_n_R = UR[2]*normal[1] + UR[3]*normal[2] + UR[4]*normal[3]
+    uL = (UL[1],ρu_n_L,UL[5])
+    uR = (UR[1],ρu_n_R,UR[5])
+    return EntropyStableEuler.wavespeed(Euler{1}(equations.γ),uL,uR)
+end
+"""
+    function LxF_dissipation(equations::Euler{d}, normal, uL, uR)
+
+Lax-Friedrichs dissipation in the normal direction. Usually want to add
+`LxF_dissipation(eqns,normal,UM,UP)` to the right hand side.  
+"""
+@inline function LxF_dissipation(equations::Euler{1}, normal, uL, uR)
+    return .5 * wavespeed(equations, uL, uR) * (uL-uR)
+end
+@inline function LxF_dissipation(equations::Euler{2}, normal, uL, uR)
+    return .5 * normal_wavespeed(equations, normal, uL, uR) * (uL-uR)
+end
+@inline function LxF_dissipation(equations::Euler{3}, normal, uL, uR)
+    return .5 * normal_wavespeed(equations, normal, uL, uR) * (uL-uR)
+end
