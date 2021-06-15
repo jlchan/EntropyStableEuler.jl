@@ -2,6 +2,8 @@ using EntropyStableEuler
 using Test
 using StaticArrays
 
+norm(u) = sqrt(sum(u.^2))
+
 @testset "Logmean tests" begin
     uL,uR = 1,2
     @test logmean(uL,uR) == logmean(uL,uR,log(uL),log(uR))
@@ -28,7 +30,7 @@ end
     @testset "Entropy variable tests" begin
 
         U = prim_to_cons(Euler{d}(),init_prim(d))
-        V = v_ufun(Euler{d}(),U)
+        V = cons_to_entropy(Euler{d}(),U)
 
         h = 1e-7
         central_diff(f,x) = (f(x+h) - f(x-h))/(2*h)
@@ -37,7 +39,7 @@ end
             @test abs(V[j] - central_diff(x->Sfun(Euler{d}(),swapentry(U,x,j)),U[j])) < h
         end
 
-        UV = u_vfun(Euler{d}(),V)
+        UV = entropy_to_cons(Euler{d}(),V)
         @test all(UV .≈ U)
     end
 
@@ -83,8 +85,8 @@ end
 
         UL = prim_to_cons(Euler{d}(),init_prim(d))
         UR = prim_to_cons(Euler{d}(),init_prim(d).*1.1)
-        VL = v_ufun(Euler{d}(),UL)
-        VR = v_ufun(Euler{d}(),UR)
+        VL = cons_to_entropy(Euler{d}(),UL)
+        VR = cons_to_entropy(Euler{d}(),UR)
 
         ψ(U) = (γ-1).*U[2:d+1]
         F = fS(Euler{d}(),UL,UR)
@@ -98,15 +100,31 @@ end
         end
     end
 
+    @testset "Dissipation" begin
+        UL = prim_to_cons(Euler{d}(),init_prim(d))
+        UR = prim_to_cons(Euler{d}(),init_prim(d).*1.1)
+        VL = cons_to_entropy(Euler{d}(),UL)
+        VR = cons_to_entropy(Euler{d}(),UR)
+
+        normal = randn(d)
+        normal = normal/norm(normal)
+        dissipation = LxF_dissipation(Euler{d}(),normal,UL,UL)
+        @test norm(dissipation) < 50*eps()
+
+        dissipation = LxF_dissipation(Euler{d}(),normal,UL,UR)
+        vTF(VL,VR,F) = sum((VL .- VR).*F)
+        @test vTF(VL,VR,dissipation) > 0.0
+    end
+
     @testset "Type stability tests" begin
         Q = init_prim(d)
         U = prim_to_cons(Euler{d}(),Q)
-        V = v_ufun(Euler{d}(),U)
+        V = cons_to_entropy(Euler{d}(),U)
 
         @inferred prim_to_cons(Euler{d}(),Q)
         @inferred cons_to_prim_beta(Euler{d}(),U)
-        @inferred v_ufun(Euler{d}(),U)
-        @inferred u_vfun(Euler{d}(),V)
+        @inferred cons_to_entropy(Euler{d}(),U)
+        @inferred entropy_to_cons(Euler{d}(),V)
         @inferred fS(Euler{d}(),U,U)
     end
 end
