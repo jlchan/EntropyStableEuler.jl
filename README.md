@@ -1,3 +1,5 @@
+# This repository is no longer maintained; please see StartUpDG.jl or Trixi.jl for my current Julia-based DG codes.
+
 # EntropyStableEuler
 
 [![Build status](https://github.com/jlchan/EntropyStableEuler.jl/workflows/CI/badge.svg)](https://github.com/jlchan/EntropyStableEuler.jl/actions)
