@@ -16,7 +16,7 @@ The package exports
 - `fS(Euler{d}(),UL,UR)`, which evaluates d-dimensional EC fluxes using conservative variables.
 - `fS_prim(Euler{d}(),QL,QR)`, which evaluates entropy conservative fluxes using primitive variables `Q = (ρ,uvw...,β)`.
 - `fS_prim_log(Euler{d}(),QL,QR)`, which takes advantage of precomputed logarithms. Solutions are assumed to be of the form `Q = (ρ,uvw...,β,log(ρ),log(β))`.
-- `u_vfun(Euler{d}(),V), v_ufun(Euler{d}(),U)` to convert between conservative variables `U` and entropy variables `V`
+- `entropy_to_cons(Euler{d}(),V), cons_to_entropy(Euler{d}(),U)` to convert between conservative variables `U` and entropy variables `V`
 - `cons_to_prim_beta(Euler{d}(),U)` to convert between conservative and "primitive" variables (involving inverse temperature β) used to evaluate fluxes.
 
 # Example
@@ -35,8 +35,8 @@ Fx,Fy = fS(Euler{2}(),UL,UR)
 QL,QR = cons_to_prim_beta.(Euler{2}(),(UL,UR))
 Fx,Fy = fS_prim(Euler{2}(),QL,QR)
 
-QlogL = map(x->log.(x),(first(QL),last(QL)))
-QlogR = map(x->log.(x),(first(QR),last(QR)))
+QlogL = map(x->log(x),(first(QL),last(QL)))
+QlogR = map(x->log(x),(first(QR),last(QR)))
 Fx,Fy = fS_prim_log(Euler{2}(),QL,QR,QlogL,QlogR)
 ```
 

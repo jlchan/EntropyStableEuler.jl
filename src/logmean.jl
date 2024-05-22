@@ -21,7 +21,7 @@ Uses pre-computed log values logL = log(aL),logR = log(aR)
     da = aR-aL
     aavg = .5*(aR+aL)
     f = da/aavg
-    v = f^2
+    v = f*f
     if abs(f)<1e-4
         # numbers assume γ = 1.4 (Winters provides formulas for general γ)
         return aavg*(1 + v*(-.2-v*(.0512 - v*0.026038857142857)))
